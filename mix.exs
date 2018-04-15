@@ -1,28 +1,31 @@
 defmodule Dpos.MixProject do
   use Mix.Project
 
+  @desc "DPoS offline tools for Elixir"
   @version "0.1.0"
-  @url "https://github.com/lwf/dpos-elixir"
+  @url "https://github.com/sgessa/dpos-ex"
   @maintainers ["Stefano Gessa"]
 
   def project do
     [
-      name: "DPoS",
-      maintainers: @maintainers,
       app: :dpos,
       version: @version,
       elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
-      package: package(),
       deps: deps(),
+
+      # Hex
+      package: package(),
+      description: @desc,
+
+      # Docs
+      name: "DPoS",
       docs: docs()
     ]
   end
 
   def application do
-    [
-      extra_applications: [:logger]
-    ]
+    [extra_applications: [:logger]]
   end
 
   defp deps do
@@ -45,8 +48,7 @@ defmodule Dpos.MixProject do
     [
       maintainers: @maintainers,
       licenses: ["MIT"],
-      links: %{github: @url},
-      files: ~w(lib) ++ ~w(CHANGELOG.md LICENSE mix.exs README.md)
+      links: %{"GitHub" => @url}
     ]
   end
 end
