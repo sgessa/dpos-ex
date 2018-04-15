@@ -1,5 +1,6 @@
 defmodule Dpos.Wallet do
-  defstruct [:priv_key, :pub_key, :address]
+  defstruct [:priv_key, :pub_key, :address, :suffix_length]
+
   def generate_lisk(secret), do: generate(secret, "L")
   def generate_shift(secret), do: generate(secret, "S")
   def generate_lwf(secret), do: generate(secret, "LWF")
@@ -11,7 +12,8 @@ defmodule Dpos.Wallet do
     %Dpos.Wallet{
       priv_key: priv_key,
       pub_key: pub_key,
-      address: address
+      address: address,
+      suffix_length: String.length(suffix)
     }
   end
 end

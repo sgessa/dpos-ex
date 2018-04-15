@@ -34,5 +34,18 @@ defmodule DposTest do
       |> Dpos.Tx.sign(wallet.priv_key)
 
     assert tx.id == "12177981357595809166"
+
+    tx2 =
+      %{
+        fee: 1,
+        amount: 5,
+        timestamp: 1_523_783_691,
+        sender_pkey: wallet.pub_key,
+        rcpt_address: wallet.address
+      }
+      |> Dpos.Tx.build_send_tx()
+      |> Dpos.Tx.sign(wallet)
+
+    assert tx == tx2
   end
 end
