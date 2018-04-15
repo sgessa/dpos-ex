@@ -48,8 +48,7 @@ wallet = Dpos.Wallet.generate(secret, "XYZ")
 **Transactions**
 
 ```elixir
-%Dpos.Tx{
-  type: 0,
+%{
   fee: 1_000_000, # Satoshis
   amount: 20_000_000, # Satoshis
   timestamp: 1_523_783_691,
@@ -57,6 +56,7 @@ wallet = Dpos.Wallet.generate(secret, "XYZ")
   rcpt_address: wallet.address,
   address_suffix_length: 3
 }
+|> Dpos.Tx.build_send_tx()
 |> Dpos.Tx.sign(wallet.priv_key)
 
 %Dpos.Tx{
