@@ -24,7 +24,7 @@ defmodule Dpos.Tx do
     |> sign(wallet.priv_key, second_priv_key)
   end
 
-  def sign(tx, priv_key, second_priv_key) when is_binary(priv_key) do
+  def sign(tx, priv_key, second_priv_key) do
     if tx.timestamp < 0, do: raise("Invalid Timestamp")
 
     tx

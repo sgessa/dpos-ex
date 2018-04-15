@@ -17,6 +17,7 @@ defmodule Dpos.MixProject do
       # Hex
       package: package(),
       description: @desc,
+      source_url: @url,
 
       # Docs
       name: "DPoS",
@@ -39,7 +40,6 @@ defmodule Dpos.MixProject do
     [
       main: "readme",
       source_ref: "v#{@version}",
-      source_url: @url,
       extras: ["README.md"]
     ]
   end
