@@ -16,7 +16,7 @@ end
 
 ## Usage
 
-**Wallets**
+**Wallet utilities**
 
 ```elixir
 secret = "my secret"
@@ -45,7 +45,7 @@ wallet = Dpos.Wallet.generate(secret, "XYZ")
 }
 ```
 
-**Transactions**
+**Transaction utilities**
 
 ```elixir
 %{
@@ -59,6 +59,7 @@ wallet = Dpos.Wallet.generate(secret, "XYZ")
 |> Dpos.Tx.build_send_tx()
 |> Dpos.Tx.sign(wallet.priv_key)
 
+# Output
 %Dpos.Tx{
   address_suffix_length: 3,
   amount: 20000000,
@@ -75,6 +76,15 @@ wallet = Dpos.Wallet.generate(secret, "XYZ")
   timestamp: 1523783691,
   type: 0
 }
+
+# Sign can also accept a wallet.
+# Note that this will set the correct address suffix length automatically on the transaction.
+Dpos.Tx.sign(tx, wallet)
+
+# And a second signing private key
+Dpos.Tx.sign(tx, priv_key, second_priv_key)
+# Or
+Dpos.Tx.sign(tx, wallet, second_priv_key)
 ```
 
 ## Contributing
