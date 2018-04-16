@@ -37,17 +37,19 @@ defmodule Dpos.Tx.RegisterDelegateTest do
     Dpos.Tx.sign(tx, wallet.priv_key)
   end
 
-  test "delegate transaction" do
-    tx =
-      @tx.asset
-      |> build_tx()
-      |> sign_tx()
+  describe "delegate transaction" do
+    test "should match example tx" do
+      tx =
+        @tx.asset
+        |> build_tx()
+        |> sign_tx()
 
-    assert tx == @tx
-  end
+      assert tx == @tx
+    end
 
-  test "should return zero byte binary on get_child_bytes if delegate asset is not set" do
-    tx = build_tx()
-    assert Dpos.Tx.RegisterDelegate.get_child_bytes(tx) == <<>>
+    test "should return zero byte binary on get_child_bytes if delegate asset is not set" do
+      tx = build_tx()
+      assert Dpos.Tx.RegisterDelegate.get_child_bytes(tx) == <<>>
+    end
   end
 end

@@ -96,6 +96,10 @@ Dpos.Tx.sign(tx, wallet, second_priv_key)
 
 Clone the repository and run `$ mix test` to make sure everything is working.
 
+## Authors
+
+* **Stefano Gessa** - [sgessa](https://github.com/sgessa)
+
 ## License
 
 DPoS is released under the MIT license. See the [license file](LICENSE.txt).
