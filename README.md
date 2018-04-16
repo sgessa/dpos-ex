@@ -21,7 +21,7 @@ end
 ```elixir
 secret = "my secret"
 
-# for LWF
+# For LWF
 lwf_wallet = Dpos.Wallet.generate_lwf(secret)
 
 # For Lisk
@@ -61,7 +61,7 @@ tx_data =
 
 tx =
   tx_data
-  |> Dpos.Tx.build_send_tx()
+  |> Dpos.Tx.Send.build()
   |> Dpos.Tx.sign(wallet.priv_key)
 
 # Output
