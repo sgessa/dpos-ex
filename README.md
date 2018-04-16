@@ -33,6 +33,7 @@ shift_wallet = Dpos.Wallet.generate_shift(secret)
 # For any lisk-like wallet
 wallet = Dpos.Wallet.generate(secret, "XYZ")
 
+# Output
 %Dpos.Wallet{
   address: "2340651171948227443XYZ",
   priv_key: <<185, 209, 208, 19, 246, 0, 236, 27, 241, 107, 174, 106, 54, 52,
@@ -48,16 +49,20 @@ wallet = Dpos.Wallet.generate(secret, "XYZ")
 **Transaction utilities**
 
 ```elixir
-%{
-  fee: 1_000_000, # Satoshis
-  amount: 20_000_000, # Satoshis
-  timestamp: 1_523_783_691,
-  sender_pkey: wallet.pub_key,
-  rcpt_address: wallet.address,
-  address_suffix_length: 3
-}
-|> Dpos.Tx.build_send_tx()
-|> Dpos.Tx.sign(wallet.priv_key)
+tx_data =
+  %{
+    fee: 1_000_000, # Satoshis
+    amount: 20_000_000, # Satoshis
+    timestamp: 1_523_783_691,
+    sender_pkey: wallet.pub_key,
+    rcpt_address: wallet.address,
+    address_suffix_length: 3
+  }
+
+tx =
+  tx_data
+  |> Dpos.Tx.build_send_tx()
+  |> Dpos.Tx.sign(wallet.priv_key)
 
 # Output
 %Dpos.Tx{
