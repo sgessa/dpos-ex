@@ -12,12 +12,7 @@ defmodule Dpos.Tx.RegisterDelegateTest do
     sender_pkey: @delegate_pk,
     requester_pkey: nil,
     timestamp: 0,
-    asset: %{
-      delegate: %{
-        username: "genesis_1",
-        pub_key: @delegate_pk
-      }
-    },
+    asset: %{delegate: %{username: "genesis_1"}},
     rcpt_address: nil,
     signature:
       <<4, 50, 187, 74, 172, 90, 179, 7, 171, 86, 231, 94, 70, 194, 215, 155, 52, 254, 122, 210,

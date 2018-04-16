@@ -3,10 +3,22 @@ defmodule Dpos.Tx.RegisterDelegate do
   @amount 0
 
   def build(attrs) do
-    struct!(Dpos.Tx, Map.merge(attrs, %{type: @type_id, amount: @amount}))
+    asset = normalize_asset(attrs)
+    struct!(Dpos.Tx, Map.merge(attrs, %{type: @type_id, amount: @amount, asset: asset}))
   end
 
   def get_child_bytes(%Dpos.Tx{asset: %{delegate: %{username: username}}}), do: username
 
   def get_child_bytes(_tx), do: <<>>
+
+  defp normalize_asset(%{asset: %{delegate: %{username: username}}}) do
+    username =
+      username
+      |> String.downcase()
+      |> String.trim()
+
+    %{delegate: %{username: username}}
+  end
+
+  defp normalize_asset(attrs), do: attrs
 end
