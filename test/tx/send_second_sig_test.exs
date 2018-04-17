@@ -46,9 +46,5 @@ defmodule Dpos.Tx.SendSecondSigTest do
     test "should match example tx" do
       assert sign_tx(build_tx()) == @tx
     end
-
-    test "should return zero byte binary on get_child_bytes" do
-      assert Dpos.Tx.Send.get_child_bytes(build_tx()) == <<>>
-    end
   end
 end

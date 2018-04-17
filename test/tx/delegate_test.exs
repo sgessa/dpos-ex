@@ -1,4 +1,4 @@
-defmodule Dpos.Tx.RegisterDelegateTest do
+defmodule Dpos.Tx.DelegateTest do
   use ExUnit.Case
 
   @delegate_secret "robust swift grocery peasant forget share enable convince deputy road keep cheap"
@@ -24,7 +24,7 @@ defmodule Dpos.Tx.RegisterDelegateTest do
   }
 
   def build_tx(asset \\ %{}) do
-    Dpos.Tx.RegisterDelegate.build(%{
+    Dpos.Tx.Delegate.build(%{
       fee: @tx.fee,
       timestamp: @tx.timestamp,
       sender_pkey: @tx.sender_pkey,
@@ -45,11 +45,6 @@ defmodule Dpos.Tx.RegisterDelegateTest do
         |> sign_tx()
 
       assert tx == @tx
-    end
-
-    test "should return zero byte binary on get_child_bytes if delegate asset is not set" do
-      tx = build_tx()
-      assert Dpos.Tx.RegisterDelegate.get_child_bytes(tx) == <<>>
     end
   end
 end

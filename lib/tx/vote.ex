@@ -7,6 +7,4 @@ defmodule Dpos.Tx.Vote do
   end
 
   def get_child_bytes(%Dpos.Tx{asset: %{votes: votes}}), do: <<Enum.join(votes)::bytes>>
-
-  def get_child_bytes(_tx), do: <<>>
 end

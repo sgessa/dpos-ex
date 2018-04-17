@@ -1,4 +1,4 @@
-defmodule Dpos.Tx.RegisterDelegate do
+defmodule Dpos.Tx.Delegate do
   @type_id 2
   @amount 0
 
@@ -8,8 +8,6 @@ defmodule Dpos.Tx.RegisterDelegate do
   end
 
   def get_child_bytes(%Dpos.Tx{asset: %{delegate: %{username: username}}}), do: username
-
-  def get_child_bytes(_tx), do: <<>>
 
   defp normalize_asset(%{asset: %{delegate: %{username: username}}}) do
     username =

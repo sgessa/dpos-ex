@@ -1,4 +1,4 @@
-defmodule Dpos.Tx.VoteTest do
+defmodule Dpos.Tx.MultiSigTest do
   use ExUnit.Case
 
   @secret "wagon stock borrow episode laundry kitten salute link globe zero feed marble"

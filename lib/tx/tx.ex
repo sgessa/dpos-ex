@@ -4,8 +4,8 @@ defmodule Dpos.Tx do
 
   @types %{
     0 => Tx.Send,
-    1 => Tx.CreateSignature,
-    2 => Tx.RegisterDelegate,
+    1 => Tx.Signature,
+    2 => Tx.Delegate,
     3 => Tx.Vote
   }
 
@@ -46,17 +46,17 @@ defmodule Dpos.Tx do
     |> determine_id()
   end
 
-  defp create_signature(tx, priv_key, key \\ :signature)
+  defp create_signature(tx, priv_key, field \\ :signature)
 
-  defp create_signature(%Tx{} = tx, nil, _key), do: tx
+  defp create_signature(%Tx{} = tx, nil, _field), do: tx
 
-  defp create_signature(%Tx{} = tx, priv_key, key) do
+  defp create_signature(%Tx{} = tx, priv_key, field) do
     {:ok, signature} =
       tx
       |> compute_hash()
       |> Ed25519.sign_detached(priv_key)
 
-    Map.put(tx, key, signature)
+    Map.put(tx, field, signature)
   end
 
   defp determine_id(%Tx{} = tx) do
