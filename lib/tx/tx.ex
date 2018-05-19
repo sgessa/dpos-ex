@@ -6,7 +6,8 @@ defmodule Dpos.Tx do
     0 => Tx.Send,
     1 => Tx.Signature,
     2 => Tx.Delegate,
-    3 => Tx.Vote
+    3 => Tx.Vote,
+    4 => Tx.MultiSig
   }
 
   @enforce_keys [

@@ -3,11 +3,13 @@ defmodule Dpos.Tx.MultiSig do
   @amount 0
 
   def build(attrs) do
-    struct!(Dpos.Tx, %{attrs | type: @type_id, amount: @amount})
+    struct!(Dpos.Tx, Map.merge(attrs, %{type: @type_id, amount: @amount}))
   end
 
-  def get_child_bytes(%Dpos.Tx{asset: %{multi_sig: %{min: min, group: group, ttl: ttl}}}) do
-    group = Enum.join(group)
-    <<min::size(8), ttl::size(8), group::bytes>>
+  def get_child_bytes(%Dpos.Tx{
+        asset: %{multisignature: %{min: min, keysgroup: keys, lifetime: ttl}}
+      }) do
+    keys = Enum.join(keys)
+    <<min::size(8), ttl::size(8), keys::bytes>>
   end
 end

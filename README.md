@@ -9,7 +9,7 @@ Add DPoS to your `mix.exs`
 ```elixir
 def deps do
   [
-    {:dpos, "~> 0.1.0"}
+    {:dpos, "~> 0.1.2"}
   ]
 end
 ```
