@@ -7,11 +7,11 @@ defmodule Dpos.Tx.SendSecondSigTest do
   @tx %Dpos.Tx{
     type: 0,
     amount: 15,
-    sender_pkey:
+    senderPublicKey:
       <<144, 76, 41, 72, 153, 129, 156, 206, 2, 131, 216, 211, 81, 203, 16, 254, 191, 160, 233,
         240, 172, 217, 10, 130, 14, 200, 235, 144, 167, 8, 76, 55>>,
     timestamp: 40_404_848,
-    rcpt_address: "6726252519465624456L",
+    recipientId: "6726252519465624456L",
     signature:
       <<230, 64, 174, 136, 241, 166, 174, 17, 139, 108, 186, 27, 118, 169, 114, 103, 1, 22, 65,
         134, 129, 61, 171, 235, 244, 116, 115, 28, 37, 177, 27, 52, 20, 195, 120, 156, 175, 11,
@@ -31,8 +31,8 @@ defmodule Dpos.Tx.SendSecondSigTest do
       amount: @tx.amount,
       fee: @tx.fee,
       timestamp: @tx.timestamp,
-      sender_pkey: @tx.sender_pkey,
-      rcpt_address: @tx.rcpt_address
+      senderPublicKey: @tx.senderPublicKey,
+      recipientId: @tx.recipientId
     })
   end
 

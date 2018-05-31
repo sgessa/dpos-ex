@@ -9,11 +9,11 @@ defmodule Dpos.Tx.DelegateTest do
   @tx %Dpos.Tx{
     type: 2,
     amount: 0,
-    sender_pkey: @delegate_pk,
+    senderPublicKey: @delegate_pk,
     requester_pkey: nil,
     timestamp: 0,
     asset: %{delegate: %{username: "genesis_1"}},
-    rcpt_address: nil,
+    recipientId: nil,
     signature:
       <<4, 50, 187, 74, 172, 90, 179, 7, 171, 86, 231, 94, 70, 194, 215, 155, 52, 254, 122, 210,
         68, 210, 141, 83, 21, 31, 158, 88, 123, 199, 223, 107, 224, 18, 231, 210, 37, 73, 124,
@@ -27,7 +27,7 @@ defmodule Dpos.Tx.DelegateTest do
     Dpos.Tx.Delegate.build(%{
       fee: @tx.fee,
       timestamp: @tx.timestamp,
-      sender_pkey: @tx.sender_pkey,
+      senderPublicKey: @tx.senderPublicKey,
       asset: asset
     })
   end

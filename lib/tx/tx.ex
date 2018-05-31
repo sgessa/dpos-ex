@@ -15,12 +15,12 @@ defmodule Dpos.Tx do
     :fee,
     :amount,
     :timestamp,
-    :sender_pkey
+    :senderPublicKey
   ]
 
   @optional_keys [
     :id,
-    :rcpt_address,
+    :recipientId,
     :requester_pkey,
     :asset,
     :signature,
@@ -72,14 +72,14 @@ defmodule Dpos.Tx do
   end
 
   defp compute_hash(%Tx{} = tx) do
-    rcpt_address = address_to_binary(tx.rcpt_address, tx.address_suffix_length)
+    recipientId = address_to_binary(tx.recipientId, tx.address_suffix_length)
     child_bytes = get_child_bytes(tx)
     signature = signature_to_binary(tx.signature)
     second_signature = signature_to_binary(tx.second_signature)
 
     bytes =
-      <<tx.type, tx.timestamp::little-integer-size(32), tx.sender_pkey::bytes-size(32)>> <>
-        rcpt_address <>
+      <<tx.type, tx.timestamp::little-integer-size(32), tx.senderPublicKey::bytes-size(32)>> <>
+        recipientId <>
         <<tx.amount::little-integer-size(64)>> <> child_bytes <> signature <> second_signature
 
     :crypto.hash(:sha256, bytes)

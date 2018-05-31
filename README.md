@@ -54,8 +54,8 @@ tx_data =
     fee: 1_000_000, # Satoshis
     amount: 20_000_000, # Satoshis
     timestamp: 1_523_783_691,
-    sender_pkey: wallet.pub_key,
-    rcpt_address: wallet.address,
+    senderPublicKey: wallet.pub_key,
+    recipientId: wallet.address,
     address_suffix_length: 3
   }
 
@@ -70,9 +70,9 @@ tx =
   amount: 20000000,
   fee: 1000000,
   id: "8253638074099328158",
-  rcpt_address: "2340651171948227443XYZ",
+  recipientId: "2340651171948227443XYZ",
   second_signature: nil,
-  sender_pkey: <<249, 101, 174, 176, 6, 137, 118, 4, 103, 241, 92, 60, 161, 68,
+  senderPublicKey: <<249, 101, 174, 176, 6, 137, 118, 4, 103, 241, 92, 60, 161, 68,
     190, 100, 196, 154, 35, 122, 177, 234, 113, 116, 109, 35, 81, 173, 215, 138,
     11, 101>>,
   signature: <<174, 102, 52, 129, 23, 208, 150, 174, 43, 119, 129, 90, 34, 224,

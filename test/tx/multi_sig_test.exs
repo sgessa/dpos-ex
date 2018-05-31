@@ -2,19 +2,19 @@ defmodule Dpos.Tx.MultiSigTest do
   use ExUnit.Case
 
   @secret "my secret"
-  @sender_pkey <<94, 169, 241, 207, 48, 182, 157, 239, 77, 88, 214, 50, 206, 24, 190, 230, 190,
+  @senderPublicKey <<94, 169, 241, 207, 48, 182, 157, 239, 77, 88, 214, 50, 206, 24, 190, 230, 190,
                  218, 54, 168, 1, 95, 226, 74, 49, 200, 120, 138, 47, 252, 38, 178>>
 
   @tx %Dpos.Tx{
     type: 4,
     amount: 0,
-    sender_pkey: @sender_pkey,
+    senderPublicKey: @senderPublicKey,
     timestamp: 3000,
     asset: %{
       multisignature: %{
         min: 2,
         keysgroup: [
-          @sender_pkey,
+          @senderPublicKey,
           <<138, 199, 109, 65, 163, 134, 218, 235, 205, 249, 171, 150, 94, 130, 245, 203, 104, 25,
             191, 153, 59, 166, 100, 66, 2, 86, 152, 15, 212, 106, 209, 180>>,
           <<191, 216, 193, 125, 233, 49, 196, 165, 40, 184, 150, 229, 222, 111, 210, 114, 25, 209,
@@ -23,7 +23,7 @@ defmodule Dpos.Tx.MultiSigTest do
         lifetime: 48
       }
     },
-    rcpt_address: "4710442220763968163L",
+    recipientId: "4710442220763968163L",
     signature:
       <<193, 250, 74, 239, 155, 7, 67, 189, 153, 218, 244, 150, 79, 249, 54, 38, 226, 220, 156,
         97, 102, 185, 186, 115, 49, 28, 244, 246, 113, 74, 60, 204, 64, 129, 83, 57, 241, 59, 60,
@@ -38,8 +38,8 @@ defmodule Dpos.Tx.MultiSigTest do
       amount: @tx.amount,
       fee: @tx.fee,
       timestamp: @tx.timestamp,
-      sender_pkey: @tx.sender_pkey,
-      rcpt_address: @tx.rcpt_address,
+      senderPublicKey: @tx.senderPublicKey,
+      recipientId: @tx.recipientId,
       asset: asset
     })
   end

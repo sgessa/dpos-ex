@@ -6,7 +6,7 @@ defmodule Dpos.Tx.SignatureTest do
   @tx %Dpos.Tx{
     type: 1,
     amount: 0,
-    sender_pkey:
+    senderPublicKey:
       <<249, 101, 174, 176, 6, 137, 118, 4, 103, 241, 92, 60, 161, 68, 190, 100, 196, 154, 35,
         122, 177, 234, 113, 116, 109, 35, 81, 173, 215, 138, 11, 101>>,
     timestamp: 31337,
@@ -17,7 +17,7 @@ defmodule Dpos.Tx.SignatureTest do
             187, 145, 100, 115, 99, 209, 139, 185, 84, 221, 181, 24>>
       }
     },
-    rcpt_address: "2340651171948227443L",
+    recipientId: "2340651171948227443L",
     signature:
       <<30, 176, 173, 203, 104, 176, 234, 72, 192, 18, 162, 206, 91, 94, 244, 24, 254, 196, 224,
         148, 48, 95, 89, 62, 39, 97, 227, 131, 38, 229, 241, 83, 202, 248, 192, 140, 89, 107, 73,
@@ -31,8 +31,8 @@ defmodule Dpos.Tx.SignatureTest do
     Dpos.Tx.Signature.build(%{
       fee: @tx.fee,
       timestamp: @tx.timestamp,
-      sender_pkey: @tx.sender_pkey,
-      rcpt_address: @tx.rcpt_address,
+      senderPublicKey: @tx.senderPublicKey,
+      recipientId: @tx.recipientId,
       asset: asset
     })
   end

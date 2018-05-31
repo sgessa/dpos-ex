@@ -6,7 +6,7 @@ defmodule Dpos.Tx.VoteTest do
   @tx %Dpos.Tx{
     type: 3,
     amount: 0,
-    sender_pkey:
+    senderPublicKey:
       <<192, 148, 235, 238, 126, 192, 197, 14, 190, 227, 41, 24, 101, 94, 8, 159, 110, 26, 96, 75,
         131, 188, 170, 118, 2, 147, 198, 30, 15, 24, 171, 111>>,
     timestamp: 3000,
@@ -15,7 +15,7 @@ defmodule Dpos.Tx.VoteTest do
         "+01389197bbaf1afb0acd47bbfeabb34aca80fb372a8f694a1c0716b3398db746"
       ]
     },
-    rcpt_address: "16313739661670634666L",
+    recipientId: "16313739661670634666L",
     signature:
       <<193, 250, 74, 239, 155, 7, 67, 189, 153, 218, 244, 150, 79, 249, 54, 38, 226, 220, 156,
         97, 102, 185, 186, 115, 49, 28, 244, 246, 113, 74, 60, 204, 64, 129, 83, 57, 241, 59, 60,
@@ -29,8 +29,8 @@ defmodule Dpos.Tx.VoteTest do
     Dpos.Tx.Vote.build(%{
       fee: @tx.fee,
       timestamp: @tx.timestamp,
-      sender_pkey: @tx.sender_pkey,
-      rcpt_address: @tx.rcpt_address,
+      senderPublicKey: @tx.senderPublicKey,
+      recipientId: @tx.recipientId,
       asset: asset
     })
   end
