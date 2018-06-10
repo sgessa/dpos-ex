@@ -32,7 +32,8 @@ defmodule Dpos.MixProject do
   defp deps do
     [
       {:ex_doc, "~> 0.16", only: :dev, runtime: false},
-      {:salty, "~> 0.1.3", hex: :libsalty}
+      {:salty, "~> 0.1.3", hex: :libsalty},
+      {:jason, "~> 1.0"}
     ]
   end
 

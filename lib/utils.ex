@@ -30,4 +30,7 @@ defmodule Dpos.Utils do
 
     int
   end
+
+  def hexdigest(nil), do: nil
+  def hexdigest(b), do: Base.encode16(b, case: :lower)
 end

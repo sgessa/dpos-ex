@@ -22,12 +22,25 @@ defmodule Dpos.Tx do
     :id,
     :recipientId,
     :requester_pkey,
-    :asset,
     :signature,
     :second_signature,
+    :asset,
     address_suffix_length: 1
   ]
 
+  @json_keys [
+    :id,
+    :type,
+    :fee,
+    :amount,
+    :recipientId,
+    :senderPublicKey,
+    :signature,
+    :timestamp,
+    :asset
+  ]
+
+  @derive {Jason.Encoder, only: @json_keys}
   defstruct @enforce_keys ++ @optional_keys
 
   def sign(tx, priv_key_or_wallet, second_priv_key \\ nil)
@@ -45,6 +58,13 @@ defmodule Dpos.Tx do
     |> create_signature(priv_key)
     |> create_signature(second_priv_key, :second_signature)
     |> determine_id()
+  end
+
+  def normalize(%Tx{} = tx) do
+    tx
+    |> Map.put(:senderPublicKey, Dpos.Utils.hexdigest(tx.senderPublicKey))
+    |> Map.put(:signature, Dpos.Utils.hexdigest(tx.signature))
+    |> Jason.encode!()
   end
 
   defp create_signature(tx, priv_key, field \\ :signature)
