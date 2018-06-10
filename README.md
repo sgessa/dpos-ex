@@ -9,7 +9,7 @@ Add DPoS to your `mix.exs`
 ```elixir
 def deps do
   [
-    {:dpos, "~> 0.1.2"}
+    {:dpos, "~> 0.1.3"}
   ]
 end
 ```
@@ -49,46 +49,35 @@ wallet = Dpos.Wallet.generate(secret, "XYZ")
 **Transaction utilities**
 
 ```elixir
-tx_data =
-  %{
-    fee: 1_000_000, # Satoshis
-    amount: 20_000_000, # Satoshis
-    timestamp: 1_523_783_691,
-    senderPublicKey: wallet.pub_key,
-    recipientId: wallet.address,
-    address_suffix_length: 3
-  }
-
 tx =
-  tx_data
-  |> Dpos.Tx.Send.build()
-  |> Dpos.Tx.sign(wallet.priv_key)
+  Dpos.Tx.Send.build(%{
+    amount: 10_000_000_000,
+    fee: 10_000_000,
+    timestamp: 600,
+    senderPublicKey: wallet.pub_key,
+    recipientId: rcpt,
+    asset: %{note: "Test message 2"}
+  })
+
+tx
+|> Dpos.Tx.sign(wallet)
+|> Dpos.Tx.normalize()
+
 
 # Output
-%Dpos.Tx{
-  address_suffix_length: 3,
-  amount: 20000000,
-  fee: 1000000,
-  id: "8253638074099328158",
-  recipientId: "2340651171948227443XYZ",
-  second_signature: nil,
-  senderPublicKey: <<249, 101, 174, 176, 6, 137, 118, 4, 103, 241, 92, 60, 161, 68,
-    190, 100, 196, 154, 35, 122, 177, 234, 113, 116, 109, 35, 81, 173, 215, 138,
-    11, 101>>,
-  signature: <<174, 102, 52, 129, 23, 208, 150, 174, 43, 119, 129, 90, 34, 224,
-    143, 107, 59, 247, 255, 73, 169, 207, 67, 2, 148, 104, 44, 234, 138, 9, 138,
-    51, 126, 6, 227, 72, 224, 79, 221, 11, 217, 18, ...>>,
-  timestamp: 1523783691,
-  type: 0
+{
+  "id":"12019159304724346467",
+  "type":0,
+  "fee":10000000,
+  "amount":10000000000,
+  "recipientId":"9961568538380190560LWF",
+  "senderPublicKey":"e2857234d0dbf8d609ab8a20207d1ba9c84d21dc9a7b95e4ecd717e0369a744b",
+  "signature":"5917d20da52e851f50968fe08bddd37a4ddff5d80e622c1f9623c2210c8eb24876dc5fae80aa39bb84872670da175aa9b0a20b0f2c865752912e4204caccdc0e",
+  "timestamp":600,
+  "asset":{"note": "Test message 2"}
 }
 
-# Sign can also accept a wallet.
-# Note that this will set the correct address suffix length automatically on the transaction.
-Dpos.Tx.sign(tx, wallet)
-
-# And a second signing private key
-Dpos.Tx.sign(tx, priv_key, second_priv_key)
-# Or
+# Optional: signing the tx using a second signing private key
 Dpos.Tx.sign(tx, wallet, second_priv_key)
 ```
 
