@@ -43,19 +43,12 @@ defmodule Dpos.Tx do
   @derive {Jason.Encoder, only: @json_keys}
   defstruct @enforce_keys ++ @optional_keys
 
-  def sign(tx, priv_key_or_wallet, second_priv_key \\ nil)
-
-  def sign(%Tx{} = tx, %Dpos.Wallet{} = wallet, second_priv_key) do
-    tx
-    |> Map.put(:address_suffix_length, wallet.suffix_length)
-    |> sign(wallet.priv_key, second_priv_key)
-  end
-
-  def sign(%Tx{} = tx, priv_key, second_priv_key) do
+  def sign(%Tx{} = tx, %Dpos.Wallet{} = wallet, second_priv_key \\ nil) do
     if tx.timestamp < 0, do: raise("Invalid Timestamp")
 
     tx
-    |> create_signature(priv_key)
+    |> Map.put(:address_suffix_length, wallet.suffix_length)
+    |> create_signature(wallet.priv_key)
     |> create_signature(second_priv_key, :second_signature)
     |> determine_id()
   end
