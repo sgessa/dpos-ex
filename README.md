@@ -44,6 +44,12 @@ wallet = Dpos.Wallet.generate(secret, "XYZ")
     100, 196, 154, 35, 122, 177, 234, 113, 116, 109, 35, 81, 173, 215, 138, 11,
     101>>
 }
+
+# Sign a message
+{:ok, signature} = Dpos.Wallet.sign_message(wallet, "I Love LWF")
+
+# Verify a message
+:ok = Dpos.Wallet.verify_message(wallet, "I Love LWF", signature)
 ```
 
 **Transaction utilities**
@@ -77,7 +83,7 @@ tx
   "asset":{"note": "Test message 2"}
 }
 
-# Optional: signing the tx using a second signing private key
+# Optional: signing the tx using a second private key
 Dpos.Tx.sign(tx, wallet, second_priv_key)
 ```
 
