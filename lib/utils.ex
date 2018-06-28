@@ -10,6 +10,14 @@ defmodule Dpos.Utils do
     {sk, pk}
   end
 
+  def sign_message(message, sk) do
+    Ed25519.sign(message, sk)
+  end
+
+  def verify_message(message, signature, pk) do
+    Ed25519.verify_detached(signature, message, pk)
+  end
+
   def derive_address(pk, suffix) do
     pk_hash = :crypto.hash(:sha256, pk)
     <<head::bytes-size(8), _tail::bytes>> = pk_hash

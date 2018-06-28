@@ -16,4 +16,12 @@ defmodule Dpos.Wallet do
       suffix_length: String.length(suffix)
     }
   end
+
+  def sign_message(%Dpos.Wallet{priv_key: sk}, message) do
+    Dpos.Utils.sign_message(message, sk)
+  end
+
+  def verify_message(%Dpos.Wallet{pub_key: pk}, message, signature) do
+    Dpos.Utils.verify_message(message, signature, pk)
+  end
 end
