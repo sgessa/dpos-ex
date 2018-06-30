@@ -39,7 +39,7 @@ defmodule Dpos.Tx.SignatureTest do
 
   def sign_tx(tx) do
     wallet = Dpos.Wallet.generate(@secret)
-    Dpos.Tx.sign(tx, wallet.priv_key)
+    Dpos.Tx.sign(tx, wallet)
   end
 
   describe "signature transaction" do

@@ -39,7 +39,7 @@ defmodule Dpos.Tx.SendSecondSigTest do
   def sign_tx(tx) do
     wallet = Dpos.Wallet.generate(@secret)
     second_wallet = Dpos.Wallet.generate(@second_secret)
-    Dpos.Tx.sign(tx, wallet.priv_key, second_wallet.priv_key)
+    Dpos.Tx.sign(tx, wallet, second_wallet.priv_key)
   end
 
   describe "send transaction" do

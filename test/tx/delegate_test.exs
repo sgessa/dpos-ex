@@ -34,7 +34,7 @@ defmodule Dpos.Tx.DelegateTest do
 
   def sign_tx(tx) do
     wallet = Dpos.Wallet.generate(@delegate_secret)
-    Dpos.Tx.sign(tx, wallet.priv_key)
+    Dpos.Tx.sign(tx, wallet)
   end
 
   describe "delegate transaction" do

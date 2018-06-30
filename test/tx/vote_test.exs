@@ -37,7 +37,7 @@ defmodule Dpos.Tx.VoteTest do
 
   def sign_tx(tx) do
     wallet = Dpos.Wallet.generate(@secret)
-    Dpos.Tx.sign(tx, wallet.priv_key)
+    Dpos.Tx.sign(tx, wallet)
   end
 
   describe "vote transaction" do

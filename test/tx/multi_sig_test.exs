@@ -2,8 +2,8 @@ defmodule Dpos.Tx.MultiSigTest do
   use ExUnit.Case
 
   @secret "my secret"
-  @senderPublicKey <<94, 169, 241, 207, 48, 182, 157, 239, 77, 88, 214, 50, 206, 24, 190, 230, 190,
-                 218, 54, 168, 1, 95, 226, 74, 49, 200, 120, 138, 47, 252, 38, 178>>
+  @senderPublicKey <<94, 169, 241, 207, 48, 182, 157, 239, 77, 88, 214, 50, 206, 24, 190, 230,
+                     190, 218, 54, 168, 1, 95, 226, 74, 49, 200, 120, 138, 47, 252, 38, 178>>
 
   @tx %Dpos.Tx{
     type: 4,
@@ -46,7 +46,7 @@ defmodule Dpos.Tx.MultiSigTest do
 
   def sign_tx(tx) do
     wallet = Dpos.Wallet.generate(@secret)
-    Dpos.Tx.sign(tx, wallet.priv_key)
+    Dpos.Tx.sign(tx, wallet)
   end
 
   describe "multi sig transaction" do
