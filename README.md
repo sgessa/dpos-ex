@@ -4,12 +4,16 @@ A pure Elixir port of vekexasia's [dpos-offline](https://www.npmjs.com/package/d
 
 ## Installation
 
+Install libsodium development headers:
+
+`apt install -y libsodium-dev`
+
 Add DPoS to your `mix.exs`
 
 ```elixir
 def deps do
   [
-    {:dpos, "~> 0.1.3"}
+    {:dpos, "~> 0.1.4"}
   ]
 end
 ```
