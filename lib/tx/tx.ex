@@ -57,7 +57,6 @@ defmodule Dpos.Tx do
     tx
     |> Map.put(:senderPublicKey, Dpos.Utils.hexdigest(tx.senderPublicKey))
     |> Map.put(:signature, Dpos.Utils.hexdigest(tx.signature))
-    |> Jason.encode!()
   end
 
   defp create_signature(tx, priv_key, field \\ :signature)

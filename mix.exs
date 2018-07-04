@@ -33,6 +33,7 @@ defmodule Dpos.MixProject do
     [
       {:ex_doc, "~> 0.16", only: :dev, runtime: false},
       {:salty, "~> 0.1.3", hex: :libsalty},
+      {:httpoison, "~> 1.0"},
       {:jason, "~> 1.0"}
     ]
   end
