@@ -27,14 +27,27 @@ defmodule Dpos.Net do
     host = net[:host]
     port = net[:port]
 
-    payload = %{transactions: [Dpos.Tx.normalize(tx)]}
+    payload = %{transaction: Dpos.Tx.normalize(tx)}
 
-    post(
-      "http://#{host}:#{port}/peer/transactions",
-      Jason.encode!(payload),
-      headers(net),
-      hackney: [pool: :default]
-    )
+    req =
+      post(
+        "http://#{host}:#{port}/peer/transactions",
+        Jason.encode!(payload),
+        headers(net),
+        hackney: [pool: :default]
+      )
+
+    with {:ok, resp} <- req,
+         {:ok, body} <- Jason.decode(resp.body) do
+      if body["success"] do
+        {:ok, body}
+      else
+        {:error, body["message"]}
+      end
+    else
+      err ->
+        err
+    end
   end
 
   defp headers(net) do
