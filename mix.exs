@@ -2,7 +2,7 @@ defmodule Dpos.MixProject do
   use Mix.Project
 
   @desc "DPoS offline tools for Elixir"
-  @version "0.1.9"
+  @version "0.2.0"
   @url "https://github.com/lwfcoin/dpos-ex"
   @maintainers ["Stefano Gessa"]
 
