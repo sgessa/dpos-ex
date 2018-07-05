@@ -23,7 +23,7 @@ defmodule Dpos.Tx do
     :recipientId,
     :requester_pkey,
     :signature,
-    :second_signature,
+    :signSignature,
     :asset,
     address_suffix_length: 1
   ]
@@ -36,6 +36,7 @@ defmodule Dpos.Tx do
     :recipientId,
     :senderPublicKey,
     :signature,
+    :signSignature,
     :timestamp,
     :asset
   ]
@@ -49,7 +50,7 @@ defmodule Dpos.Tx do
     tx
     |> Map.put(:address_suffix_length, wallet.suffix_length)
     |> create_signature(wallet.priv_key)
-    |> create_signature(second_priv_key, :second_signature)
+    |> create_signature(second_priv_key, :signSignature)
     |> determine_id()
   end
 
@@ -57,6 +58,7 @@ defmodule Dpos.Tx do
     tx
     |> Map.put(:senderPublicKey, Dpos.Utils.hexdigest(tx.senderPublicKey))
     |> Map.put(:signature, Dpos.Utils.hexdigest(tx.signature))
+    |> Map.put(:signSignature, Dpos.Utils.hexdigest(tx.signSignature))
   end
 
   defp create_signature(tx, priv_key, field \\ :signature)
@@ -87,7 +89,7 @@ defmodule Dpos.Tx do
     recipientId = address_to_binary(tx.recipientId, tx.address_suffix_length)
     child_bytes = get_child_bytes(tx)
     signature = signature_to_binary(tx.signature)
-    second_signature = signature_to_binary(tx.second_signature)
+    second_signature = signature_to_binary(tx.signSignature)
 
     bytes =
       <<tx.type, tx.timestamp::little-integer-size(32), tx.senderPublicKey::bytes-size(32)>> <>
