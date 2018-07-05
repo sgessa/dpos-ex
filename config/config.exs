@@ -28,15 +28,3 @@ use Mix.Config
 # here (which is why it is important to import them last).
 #
 #     import_config "#{Mix.env}.exs"
-
-config :dpos,
-  lwf: [
-    nethash: "704f232786a9bff25d0630c06abbc34957448ba6309d6dcef949cf9a6f43954a",
-    version: "0.1.4",
-    port: 18124
-  ],
-  "lwf-t": [
-    nethash: "c16656e85880df9a41abed0aa13b2987b0d853adadc91cbc7e5c8332ea37ccc9",
-    version: "0.1.4",
-    port: 18101
-  ]
