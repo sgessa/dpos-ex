@@ -1,16 +1,23 @@
 defmodule Dpos.Net do
   use HTTPoison.Base
 
-  def broadcast(tx, net \\ :lwf) do
-    config = Application.get_env(:dpos, net)
-    broadcast(tx, "127.0.0.1", config[:port], net)
+  def broadcast(%Dpos.Tx{} = tx, net) when is_binary(net) do
+    broadcast(tx, String.to_atom(net))
   end
 
-  def broadcast(tx, hostname, port, net) do
+  def broadcast(%Dpos.Tx{} = tx, net) when is_atom(net) do
+    config = [host: "127.0.0.1"] ++ Application.get_env(:dpos, net)
+    broadcast(tx, config)
+  end
+
+  def broadcast(%Dpos.Tx{} = tx, net) when is_list(net) do
+    host = net[:host]
+    port = net[:port]
+
     payload = %{transactions: [Dpos.Tx.normalize(tx)]}
 
     post(
-      "http://#{hostname}:#{port}/peer/transactions",
+      "http://#{host}:#{port}/peer/transactions",
       Jason.encode!(payload),
       headers(net),
       hackney: [pool: :default]
@@ -18,13 +25,11 @@ defmodule Dpos.Net do
   end
 
   defp headers(net) do
-    config = Application.get_env(:dpos, net)
-
     [
       {"Content-Type", "application/json"},
       {"Accept", "application/json"},
-      {"nethash", config[:nethash]},
-      {"version", config[:version]},
+      {"nethash", net[:nethash]},
+      {"version", net[:version]},
       {"port", "1"}
     ]
   end
