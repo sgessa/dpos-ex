@@ -17,10 +17,8 @@ tx =
   })
   |> Dpos.Tx.sign(wallet)
 
+# Broadcast to LWF testnet
+# Expects a relay node is running on localhost
 tx
-|> Dpos.Tx.normalize()
-|> IO.puts()
-
-tx
-|> Dpos.Net.broadcast("node1.lwf.io", 18124)
+|> Dpos.Net.broadcast("lwf-t")
 |> IO.inspect()
