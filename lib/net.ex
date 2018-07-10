@@ -14,18 +14,18 @@ defmodule Dpos.Net do
     ]
   ]
 
-  def broadcast(%Dpos.Tx{} = tx, net) when is_binary(net) do
-    broadcast(tx, String.to_atom(net))
+  def broadcast(tx, net, opts \\ [])
+
+  def broadcast(%Dpos.Tx{} = tx, net, opts) when is_binary(net) and is_list(opts) do
+    broadcast(tx, String.to_atom(net), opts)
   end
 
-  def broadcast(%Dpos.Tx{} = tx, net) when is_atom(net) do
-    config = [host: "127.0.0.1"] ++ @networks[net]
-    broadcast(tx, config)
-  end
+  def broadcast(%Dpos.Tx{} = tx, net, opts) when is_atom(net) and is_list(opts) do
+    net = @networks[net] || []
+    opts = Keyword.merge(net, opts)
 
-  def broadcast(%Dpos.Tx{} = tx, net) when is_list(net) do
-    host = net[:host]
-    port = net[:port]
+    host = opts[:host] || "127.0.0.1"
+    port = opts[:port]
 
     payload = %{transaction: Dpos.Tx.normalize(tx)}
 
@@ -33,7 +33,7 @@ defmodule Dpos.Net do
       post(
         "http://#{host}:#{port}/peer/transactions",
         Jason.encode!(payload),
-        headers(net),
+        headers(opts),
         hackney: [pool: :default]
       )
 
@@ -44,18 +44,15 @@ defmodule Dpos.Net do
       else
         {:error, body["message"]}
       end
-    else
-      err ->
-        err
     end
   end
 
-  defp headers(net) do
+  defp headers(opts) do
     [
       {"Content-Type", "application/json"},
       {"Accept", "application/json"},
-      {"nethash", net[:nethash]},
-      {"version", net[:version]},
+      {"nethash", opts[:nethash]},
+      {"version", opts[:version]},
       {"port", "1"}
     ]
   end
