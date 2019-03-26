@@ -7,7 +7,6 @@ defmodule Dpos.Tx.DelegateTest do
     type: 2,
     amount: 0,
     senderPublicKey: "9d3058175acab969f41ad9b86f7a2926c74258670fe56b37c429c01fca9f2f0f",
-    requester_pkey: nil,
     timestamp: 0,
     asset: %{delegate: %{username: "genesis_1"}},
     recipientId: nil,

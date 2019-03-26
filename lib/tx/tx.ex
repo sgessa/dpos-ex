@@ -19,7 +19,6 @@ defmodule Dpos.Tx do
   @optional_keys [
     :id,
     :recipientId,
-    :requester_pkey,
     :senderPublicKey,
     :signature,
     :signSignature,
