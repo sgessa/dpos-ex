@@ -3,47 +3,39 @@ defmodule Dpos.Tx.DelegateTest do
 
   @delegate_secret "robust swift grocery peasant forget share enable convince deputy road keep cheap"
 
-  @delegate_pk <<157, 48, 88, 23, 90, 202, 185, 105, 244, 26, 217, 184, 111, 122, 41, 38, 199, 66,
-                 88, 103, 15, 229, 107, 55, 196, 41, 192, 31, 202, 159, 47, 15>>
-
   @tx %Dpos.Tx{
     type: 2,
     amount: 0,
-    senderPublicKey: @delegate_pk,
+    senderPublicKey: "9d3058175acab969f41ad9b86f7a2926c74258670fe56b37c429c01fca9f2f0f",
     requester_pkey: nil,
     timestamp: 0,
     asset: %{delegate: %{username: "genesis_1"}},
     recipientId: nil,
     signature:
-      <<4, 50, 187, 74, 172, 90, 179, 7, 171, 86, 231, 94, 70, 194, 215, 155, 52, 254, 122, 210,
-        68, 210, 141, 83, 21, 31, 158, 88, 123, 199, 223, 107, 224, 18, 231, 210, 37, 73, 124,
-        158, 185, 11, 0, 158, 58, 169, 10, 54, 80, 73, 57, 43, 236, 154, 202, 147, 86, 240, 20,
-        42, 213, 49, 38, 9>>,
+      "0432bb4aac5ab307ab56e75e46c2d79b34fe7ad244d28d53151f9e587bc7df6be012e7d225497c9eb90b009e3aa90a365049392bec9aca9356f0142ad5312609",
     id: "11209400488510627518",
     fee: 2_500_000_000
   }
 
-  def build_tx(asset \\ %{}) do
-    Dpos.Tx.Delegate.build(%{
-      fee: @tx.fee,
-      timestamp: @tx.timestamp,
-      senderPublicKey: @tx.senderPublicKey,
-      asset: asset
-    })
-  end
-
-  def sign_tx(tx) do
+  def build_and_sign_tx(asset) do
     wallet = Dpos.Wallet.generate(@delegate_secret)
-    Dpos.Tx.sign(tx, wallet)
+
+    tx =
+      Dpos.Tx.Delegate.build(%{
+        fee: @tx.fee,
+        timestamp: @tx.timestamp,
+        senderPublicKey: wallet.pub_key,
+        asset: asset
+      })
+
+    tx
+    |> Dpos.Tx.sign(wallet)
+    |> Dpos.Tx.normalize()
   end
 
   describe "delegate transaction" do
     test "should match example tx" do
-      tx =
-        @tx.asset
-        |> build_tx()
-        |> sign_tx()
-
+      tx = build_and_sign_tx(@tx.asset)
       assert tx == @tx
     end
   end

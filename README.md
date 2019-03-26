@@ -63,10 +63,7 @@ tx =
   Dpos.Tx.Send.build(%{
     amount: 10_000_000_000,
     fee: 10_000_000,
-    timestamp: 600,
-    senderPublicKey: wallet.pub_key,
-    recipientId: rcpt,
-    asset: %{note: "Test message 2"}
+    recipientId: "9961568538380190560LWF"
   })
 
 tx
@@ -75,20 +72,26 @@ tx
 
 
 # Output
-{
-  "id":"12019159304724346467",
-  "type":0,
-  "fee":10000000,
-  "amount":10000000000,
-  "recipientId":"9961568538380190560LWF",
-  "senderPublicKey":"e2857234d0dbf8d609ab8a20207d1ba9c84d21dc9a7b95e4ecd717e0369a744b",
-  "signature":"5917d20da52e851f50968fe08bddd37a4ddff5d80e622c1f9623c2210c8eb24876dc5fae80aa39bb84872670da175aa9b0a20b0f2c865752912e4204caccdc0e",
-  "timestamp":600,
-  "asset":{"note": "Test message 2"}
+%Dpos.Tx{
+  address_suffix_length: 3,
+  amount: 10000000000,
+  asset: nil,
+  fee: 10000000,
+  id: "4370528448668269583",
+  recipientId: "9961568538380190560LWF",
+  requester_pkey: nil,
+  senderPublicKey: "f965aeb00689760467f15c3ca144be64c49a237ab1ea71746d2351add78a0b65",
+  signSignature: nil,
+  signature: "d35ea618fc55a8d6ad1f63e76bfb241387e11487f7999cfcb263e051b5dd846682ad48e8d1d255c345a88684eeb8c4ac559febc62b93d9d0ff724f3547ba4503",
+  timestamp: 89501419,
+  type: 0
 }
 
 # Optional: signing the tx using a second private key
 Dpos.Tx.sign(tx, wallet, second_priv_key)
+
+# It is possible to pass a secret/suffix tuple as second argument to Tx.sign/3:
+Dpos.Tx.sign(tx, {"my secret", "L"})
 ```
 
 ## Contributing

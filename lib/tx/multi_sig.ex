@@ -1,12 +1,20 @@
 defmodule Dpos.Tx.MultiSig do
+  alias Dpos.Tx
+
   @type_id 4
   @amount 0
 
   def build(attrs) do
-    struct!(Dpos.Tx, Map.merge(attrs, %{type: @type_id, amount: @amount}))
+    attrs =
+      attrs
+      |> Tx.validate_timestamp()
+      |> Map.put(:type, @type_id)
+      |> Map.put(:amount, @amount)
+
+    struct!(Tx, attrs)
   end
 
-  def get_child_bytes(%Dpos.Tx{
+  def get_child_bytes(%Tx{
         asset: %{multisignature: %{min: min, keysgroup: keys, lifetime: ttl}}
       }) do
     keys = Enum.join(keys)

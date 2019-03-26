@@ -7,44 +7,38 @@ defmodule Dpos.Tx.SendSecondSigTest do
   @tx %Dpos.Tx{
     type: 0,
     amount: 15,
-    senderPublicKey:
-      <<144, 76, 41, 72, 153, 129, 156, 206, 2, 131, 216, 211, 81, 203, 16, 254, 191, 160, 233,
-        240, 172, 217, 10, 130, 14, 200, 235, 144, 167, 8, 76, 55>>,
+    senderPublicKey: "904c294899819cce0283d8d351cb10febfa0e9f0acd90a820ec8eb90a7084c37",
     timestamp: 40_404_848,
     recipientId: "6726252519465624456L",
     signature:
-      <<230, 64, 174, 136, 241, 166, 174, 17, 139, 108, 186, 27, 118, 169, 114, 103, 1, 22, 65,
-        134, 129, 61, 171, 235, 244, 116, 115, 28, 37, 177, 27, 52, 20, 195, 120, 156, 175, 11,
-        91, 139, 133, 177, 24, 11, 87, 141, 63, 199, 198, 161, 41, 31, 95, 50, 21, 71, 87, 213,
-        166, 20, 17, 32, 235, 7>>,
-    second_signature:
-      <<218, 211, 41, 208, 242, 239, 145, 216, 47, 180, 50, 102, 161, 48, 28, 248, 237, 155, 51,
-        97, 129, 177, 199, 6, 90, 5, 151, 121, 212, 22, 72, 86, 107, 13, 105, 122, 155, 150, 13,
-        5, 233, 104, 184, 208, 188, 118, 95, 117, 39, 228, 226, 105, 173, 81, 41, 89, 51, 225,
-        113, 65, 174, 105, 133, 9>>,
+      "e640ae88f1a6ae118b6cba1b76a9726701164186813dabebf474731c25b11b3414c3789caf0b5b8b85b1180b578d3fc7c6a1291f5f32154757d5a6141120eb07",
+    signSignature:
+      "dad329d0f2ef91d82fb43266a1301cf8ed9b336181b1c7065a059779d41648566b0d697a9b960d05e968b8d0bc765f7527e4e269ad51295933e17141ae698509",
     id: "15158421722232362907",
     fee: 10_000_000
   }
 
-  def build_tx() do
-    Dpos.Tx.Send.build(%{
-      amount: @tx.amount,
-      fee: @tx.fee,
-      timestamp: @tx.timestamp,
-      senderPublicKey: @tx.senderPublicKey,
-      recipientId: @tx.recipientId
-    })
-  end
-
-  def sign_tx(tx) do
+  def build_and_sign_tx() do
     wallet = Dpos.Wallet.generate(@secret)
     {second_priv_key, _} = Dpos.Utils.generate_keypair(@second_secret)
-    Dpos.Tx.sign(tx, wallet, second_priv_key)
+
+    tx =
+      Dpos.Tx.Send.build(%{
+        amount: @tx.amount,
+        fee: @tx.fee,
+        timestamp: @tx.timestamp,
+        senderPublicKey: wallet.pub_key,
+        recipientId: @tx.recipientId
+      })
+
+    tx
+    |> Dpos.Tx.sign(wallet, second_priv_key)
+    |> Dpos.Tx.normalize()
   end
 
   describe "send transaction" do
     test "should match example tx" do
-      assert sign_tx(build_tx()) == @tx
+      assert build_and_sign_tx() == @tx
     end
   end
 end

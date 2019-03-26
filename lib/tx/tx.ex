@@ -13,18 +13,18 @@ defmodule Dpos.Tx do
   @enforce_keys [
     :type,
     :fee,
-    :amount,
-    :timestamp,
-    :senderPublicKey
+    :amount
   ]
 
   @optional_keys [
     :id,
     :recipientId,
     :requester_pkey,
+    :senderPublicKey,
     :signature,
     :signSignature,
     :asset,
+    :timestamp,
     address_suffix_length: 1
   ]
 
@@ -44,21 +44,39 @@ defmodule Dpos.Tx do
   @derive {Jason.Encoder, only: @json_keys}
   defstruct @enforce_keys ++ @optional_keys
 
-  def sign(%Tx{} = tx, %Dpos.Wallet{} = wallet, second_priv_key \\ nil) do
-    if tx.timestamp < 0, do: raise("Invalid Timestamp")
+  def sign(tx, wallet_or_secret, second_priv_key \\ nil)
 
+  def sign(%Tx{} = tx, %Dpos.Wallet{} = wallet, second_priv_key) do
     tx
+    |> Map.put(:senderPublicKey, wallet.pub_key)
     |> Map.put(:address_suffix_length, wallet.suffix_length)
     |> create_signature(wallet.priv_key)
     |> create_signature(second_priv_key, :signSignature)
     |> determine_id()
   end
 
-  def normalize(%Tx{} = tx) do
+  def sign(%Tx{} = tx, {secret, suffix}, second_priv_key)
+      when is_binary(secret) and is_binary(suffix) do
+    wallet = Dpos.Wallet.generate(secret, suffix)
+    sign(tx, wallet, second_priv_key)
+  end
+
+  def normalize(%Tx{type: type} = tx) do
     tx
+    |> @types[type].normalize()
     |> Map.put(:senderPublicKey, Dpos.Utils.hexdigest(tx.senderPublicKey))
     |> Map.put(:signature, Dpos.Utils.hexdigest(tx.signature))
     |> Map.put(:signSignature, Dpos.Utils.hexdigest(tx.signSignature))
+  end
+
+  def validate_timestamp(attrs) do
+    ts = attrs[:timestamp]
+
+    if ts && is_integer(ts) && ts >= 0 do
+      attrs
+    else
+      Map.put(attrs, :timestamp, Dpos.Time.now())
+    end
   end
 
   defp create_signature(tx, priv_key, field \\ :signature)

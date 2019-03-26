@@ -1,21 +1,27 @@
 defmodule Dpos.Tx.Delegate do
+  alias Dpos.Tx
+
   @type_id 2
   @amount 0
 
   def build(attrs) do
-    asset = normalize_asset(attrs)
-    struct!(Dpos.Tx, Map.merge(attrs, %{type: @type_id, amount: @amount, asset: asset}))
+    attrs =
+      attrs
+      |> normalize_asset()
+      |> Tx.validate_timestamp()
+      |> Map.put(:type, @type_id)
+      |> Map.put(:amount, @amount)
+
+    struct!(Tx, attrs)
   end
 
-  def get_child_bytes(%Dpos.Tx{asset: %{delegate: %{username: username}}}), do: username
+  def get_child_bytes(%Tx{asset: %{delegate: %{username: username}}}), do: username
 
-  defp normalize_asset(%{asset: %{delegate: %{username: username}}}) do
-    username =
-      username
-      |> String.downcase()
-      |> String.trim()
+  def normalize(%Tx{} = tx), do: tx
 
-    %{delegate: %{username: username}}
+  defp normalize_asset(%{asset: %{delegate: %{username: username}}} = attrs) do
+    username = username |> String.downcase() |> String.trim()
+    Map.put(attrs, :asset, %{delegate: %{username: username}})
   end
 
   defp normalize_asset(attrs), do: attrs
