@@ -1,6 +1,6 @@
 # DPoS
 
-A pure Elixir port of vekexasia's [dpos-offline](https://www.npmjs.com/package/dpos-offline) typescript library.
+An Elixir port of vekexasia's [dpos-offline](https://www.npmjs.com/package/dpos-offline) typescript library.
 
 ## Installation
 
@@ -13,7 +13,7 @@ Add DPoS to your `mix.exs`
 ```elixir
 def deps do
   [
-    {:dpos, "~> 0.2.1"}
+    {:dpos, "~> 0.2.2"}
   ]
 end
 ```
@@ -60,31 +60,26 @@ wallet = Dpos.Wallet.generate(secret, "XYZ")
 
 ```elixir
 tx =
-  Dpos.Tx.Send.build(%{
-    amount: 10_000_000_000,
-    fee: 10_000_000,
-    recipientId: "9961568538380190560LWF"
-  })
+  %{amount: 10_000_000_000, fee: 10_000_000, recipientId: "9961568538380190560LWF"}
+  |> Dpos.Tx.Send.build()
+  |> Dpos.Tx.sign(wallet)
 
-tx
-|> Dpos.Tx.sign(wallet)
-|> Dpos.Tx.normalize()
-
+# The transaction can be normalized to be easier to read
+tx |> Dpos.Tx.normalize() |> IO.inspect()
 
 # Output
 %Dpos.Tx{
-  address_suffix_length: 3,
-  amount: 10000000000,
-  asset: nil,
-  fee: 10000000,
+  type: 0,
   id: "4370528448668269583",
   recipientId: "9961568538380190560LWF",
-  requester_pkey: nil,
   senderPublicKey: "f965aeb00689760467f15c3ca144be64c49a237ab1ea71746d2351add78a0b65",
-  signSignature: nil,
   signature: "d35ea618fc55a8d6ad1f63e76bfb241387e11487f7999cfcb263e051b5dd846682ad48e8d1d255c345a88684eeb8c4ac559febc62b93d9d0ff724f3547ba4503",
+  signSignature: nil,
+  amount: 10000000000,
+  fee: 10000000,
   timestamp: 89501419,
-  type: 0
+  address_suffix_length: 3,
+  asset: nil
 }
 
 # Optional: signing the tx using a second private key
@@ -92,6 +87,16 @@ Dpos.Tx.sign(tx, wallet, second_priv_key)
 
 # It is possible to pass a secret/suffix tuple as second argument to Tx.sign/3:
 Dpos.Tx.sign(tx, {"my secret", "L"})
+
+# Finally we can broadcast our transaction to a remote node (or a local node)
+# Tx.normalize/1 is called by this method so you don't need to normalize it.
+network = [
+  nethash: "ed14889723f24ecc54871d058d98ce91ff2f973192075c0155ba2b7b70ad2511",
+  version: "1.5.0",
+  uri: "http://127.0.0.1:8000"
+]
+
+Dpos.Net.broadcast(tx, network)
 ```
 
 ## Contributing
