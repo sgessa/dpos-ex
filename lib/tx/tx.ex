@@ -92,26 +92,23 @@ defmodule Dpos.Tx do
   end
 
   defp determine_id(%Tx{} = tx) do
-    <<head::bytes-size(8), _tail::bytes>> = compute_hash(tx)
-
-    id =
-      head
-      |> Dpos.Utils.reverse_binary()
-      |> to_string()
-
+    <<head::bytes-size(8), _rest::bytes>> = compute_hash(tx)
+    id = head |> Dpos.Utils.reverse_binary() |> to_string()
     Map.put(tx, :id, id)
   end
 
   defp compute_hash(%Tx{} = tx) do
-    recipientId = address_to_binary(tx.recipientId, tx.address_suffix_length)
-    child_bytes = get_child_bytes(tx)
-    signature = signature_to_binary(tx.signature)
-    second_signature = signature_to_binary(tx.signSignature)
-
     bytes =
-      <<tx.type, tx.timestamp::little-integer-size(32), tx.senderPublicKey::bytes-size(32)>> <>
-        recipientId <>
-        <<tx.amount::little-integer-size(64)>> <> child_bytes <> signature <> second_signature
+      :erlang.list_to_binary([
+        <<tx.type>>,
+        <<tx.timestamp::little-integer-size(32)>>,
+        <<tx.senderPublicKey::bytes-size(32)>>,
+        address_to_binary(tx.recipientId, tx.address_suffix_length),
+        <<tx.amount::little-integer-size(64)>>,
+        get_child_bytes(tx),
+        signature_to_binary(tx.signature),
+        signature_to_binary(tx.signSignature)
+      ])
 
     :crypto.hash(:sha256, bytes)
   end
