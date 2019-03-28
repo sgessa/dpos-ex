@@ -81,7 +81,7 @@ defmodule Dpos.Tx do
 
       A secondary private_key can also be provided as third argument.
       """
-      @spec sign(Dpos.Tx.t(), wallet_or_secret, String.t()) :: Dpos.Tx.t()
+      @spec sign(Dpos.Tx.t(), wallet_or_secret, binary()) :: Dpos.Tx.t()
       def sign(tx, wallet_or_secret, second_priv_key \\ nil)
 
       def sign(%Dpos.Tx{} = tx, %Dpos.Wallet{} = wallet, second_priv_key) do

@@ -1,7 +1,12 @@
 defmodule Dpos.Utils do
   alias Salty.Sign.Ed25519
 
-  def generate_keypair(secret) do
+  @doc """
+  Signs a message using the wallet private key.
+  """
+  @type keypair() :: {binary(), binary()}
+  @spec generate_keypair(String.t()) :: keypair()
+  def generate_keypair(secret) when is_binary(secret) do
     {:ok, pk, sk} =
       :sha256
       |> :crypto.hash(secret)
@@ -10,17 +15,32 @@ defmodule Dpos.Utils do
     {sk, pk}
   end
 
-  def sign_message(message, sk) do
-    Ed25519.sign(message, sk)
+  @doc """
+  Signs a message and returns the signature.
+  """
+  @spec sign_message(String.t(), binary()) :: {:ok, binary()}
+  def sign_message(msg, priv_key)
+      when is_binary(msg) and is_binary(priv_key) and byte_size(priv_key) == 64 do
+    Ed25519.sign(msg, priv_key)
   end
 
-  def verify_message(message, signature, pk) do
-    Ed25519.verify_detached(signature, message, pk)
+  @doc """
+  Verifies a message.
+  """
+  @spec verify_message(String.t(), binary(), binary()) :: :ok
+  def verify_message(msg, sig, pub_key)
+      when is_binary(msg) and is_binary(sig) and is_binary(pub_key) and byte_size(pub_key) == 32 do
+    Ed25519.verify_detached(sig, msg, pub_key)
   end
 
-  def derive_address(pk, suffix) do
-    pk_hash = :crypto.hash(:sha256, pk)
-    <<head::bytes-size(8), _tail::bytes>> = pk_hash
+  @doc """
+  Derives a wallet address from the public key.
+  """
+  @spec derive_address(binary(), String.t()) :: String.t()
+  def derive_address(pub_key, suffix)
+      when is_binary(pub_key) and byte_size(pub_key) == 32 and is_binary(suffix) do
+    hash = :crypto.hash(:sha256, pub_key)
+    <<head::bytes-size(8), _tail::bytes>> = hash
 
     head
     |> reverse_binary()
@@ -28,9 +48,13 @@ defmodule Dpos.Utils do
     |> Kernel.<>(suffix)
   end
 
-  def reverse_binary(binary) do
+  @doc """
+  Reverses the given binary (from little-endian to big-endian).
+  """
+  @spec reverse_binary(binary()) :: Integer.t()
+  def reverse_binary(bin) when is_binary(bin) do
     {int, ""} =
-      binary
+      bin
       |> :binary.decode_unsigned(:little)
       |> :binary.encode_unsigned(:big)
       |> Base.encode16()
@@ -39,12 +63,25 @@ defmodule Dpos.Utils do
     int
   end
 
-  def hexdigest(nil), do: nil
-  def hexdigest(b), do: Base.encode16(b, case: :lower)
+  @doc """
+  Encodes the binary in base 16.
 
+  Returns nil if binary is nil.
+  """
+  @spec hexdigest(binary()) :: String.t()
+  def hexdigest(bin)
+  def hexdigest(nil), do: nil
+  def hexdigest(bin) when is_binary(bin), do: Base.encode16(bin, case: :lower)
+
+  @doc """
+  Converts the wallet address to binary.
+  """
+  @spec address_to_binary(String.t(), pos_integer()) :: binary()
+  def address_to_binary(address, suffix_length)
   def address_to_binary(nil, _suffix_length), do: :binary.copy(<<0>>, 8)
 
-  def address_to_binary(address, suffix_length) do
+  def address_to_binary(address, suffix_length)
+      when is_binary(address) and is_integer(suffix_length) do
     len = String.length(address) - suffix_length
 
     {int, ""} =
@@ -55,7 +92,13 @@ defmodule Dpos.Utils do
     <<int::size(64)>>
   end
 
-  def signature_to_binary(nil), do: <<>>
+  @doc """
+  Ensures signature is a binary 64 bytes long.
 
+  Returns an empty binary if signature is nil.
+  """
+  @spec signature_to_binary(binary()) :: binary()
+  def signature_to_binary(sig)
+  def signature_to_binary(nil), do: <<>>
   def signature_to_binary(sig) when is_binary(sig), do: <<sig::bytes-size(64)>>
 end

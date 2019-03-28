@@ -1,11 +1,29 @@
 defmodule Dpos.Wallet do
   defstruct [:priv_key, :pub_key, :address, :suffix_length]
 
+  @doc """
+  Alias for `generate(_secret, "L")`.
+  """
+  @spec generate_lisk(String.t()) :: Dpos.Wallet.t()
   def generate_lisk(secret), do: generate(secret, "L")
+
+  @doc """
+  Alias for `generate(_secret, "S")`.
+  """
+  @spec generate_shift(String.t()) :: Dpos.Wallet.t()
   def generate_shift(secret), do: generate(secret, "S")
+
+  @doc """
+  Alias for `generate(_secret, "LWF")`.
+  """
+  @spec generate_lwf(String.t()) :: Dpos.Wallet.t()
   def generate_lwf(secret), do: generate(secret, "LWF")
 
-  def generate(secret, suffix \\ "L") do
+  @doc """
+  Returns a `Dpos.Tx.Wallet` struct.
+  """
+  @spec generate(String.t(), String.t()) :: Dpos.Wallet.t()
+  def generate(secret, suffix \\ "L") when is_binary(secret) and is_binary(suffix) do
     {priv_key, pub_key} = Dpos.Utils.generate_keypair(secret)
     address = Dpos.Utils.derive_address(pub_key, suffix)
 
@@ -17,11 +35,21 @@ defmodule Dpos.Wallet do
     }
   end
 
-  def sign_message(%Dpos.Wallet{priv_key: sk}, message) do
-    Dpos.Utils.sign_message(message, sk)
+  @doc """
+  Signs a message using the wallet private key.
+  Returns the signature.
+  """
+  @spec sign_message(Dpos.Wallet.t(), String.t()) :: {:ok, String.t()}
+  def sign_message(%Dpos.Wallet{priv_key: sk}, msg) when is_binary(msg) do
+    Dpos.Utils.sign_message(msg, sk)
   end
 
-  def verify_message(%Dpos.Wallet{pub_key: pk}, message, signature) do
-    Dpos.Utils.verify_message(message, signature, pk)
+  @doc """
+  Verifies a message using its signature and the wallet public key.
+  """
+  @spec verify_message(Dpos.Wallet.t(), String.t(), binary()) :: :ok
+  def verify_message(%Dpos.Wallet{pub_key: pk}, msg, sign)
+      when is_binary(msg) and is_binary(sign) do
+    Dpos.Utils.verify_message(msg, sign, pk)
   end
 end

@@ -5,7 +5,7 @@ defmodule Dpos.Tx.Vote do
   Adds the delegate's public key to vote.
   """
   @spec vote(Dpos.Tx.t(), String.t()) :: Dpos.Tx.t()
-  def vote(%Dpos.Tx{} = tx, pub_key) when is_binary(pub_key) do
+  def vote(%Dpos.Tx{} = tx, pub_key) when is_binary(pub_key) and byte_size(pub_key) == 64 do
     vote(tx, "+", pub_key)
   end
 
@@ -13,7 +13,7 @@ defmodule Dpos.Tx.Vote do
   Adds the delegate's public key to unvote.
   """
   @spec unvote(Dpos.Tx.t(), String.t()) :: Dpos.Tx.t()
-  def unvote(%Dpos.Tx{} = tx, pub_key) when is_binary(pub_key) do
+  def unvote(%Dpos.Tx{} = tx, pub_key) when is_binary(pub_key) and byte_size(pub_key) == 64 do
     vote(tx, "-", pub_key)
   end
 
@@ -21,7 +21,13 @@ defmodule Dpos.Tx.Vote do
     do: <<Enum.join(votes)::bytes>>
 
   defp get_child_bytes(_) do
-    raise("Please vote or unvote at least a public key\nSee Tx.Vote.vote/2 and Tx.Vote.unvote/2")
+    [
+      "Please vote or unvote at least a public key\n",
+      "See Tx.Vote.vote/2\n",
+      "See Tx.Vote.unvote/2"
+    ]
+    |> Enum.join()
+    |> raise()
   end
 
   defp get_votes(%{asset: %{votes: votes}}) when is_list(votes), do: votes

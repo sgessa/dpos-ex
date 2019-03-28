@@ -2,23 +2,28 @@ defmodule Dpos.Tx.MultiSig do
   use Dpos.Tx, type: 4
 
   @doc """
-  Sets the lifetime of the multisignature.
+  Sets the lifetime in seconds of the multisignature.
+
+  The lifetime must be >= 3600 and <= 259200.
   """
-  @spec set_lifetime(Dpos.Tx.t(), Integer.t()) :: Dpos.Tx.t()
-  def set_lifetime(%Dpos.Tx{} = tx, lifetime) do
+  @spec set_lifetime(Dpos.Tx.t(), pos_integer) :: Dpos.Tx.t()
+  def set_lifetime(%Dpos.Tx{} = tx, ttl)
+      when is_integer(ttl) and ttl >= 3600 and ttl <= 259_200 do
     ms =
       tx
       |> get_multi_signature()
-      |> Map.put(:lifetime, lifetime)
+      |> Map.put(:lifetime, ttl)
 
     Map.put(tx, :asset, %{multisignature: ms})
   end
 
   @doc """
-  Sets the min of the multisignature.
+  Sets the minimum number of signatures required to validate a transaction.
+
+  The minimum possible value is 2.
   """
-  @spec set_min(Dpos.Tx.t(), Integer.t()) :: Dpos.Tx.t()
-  def set_min(%Dpos.Tx{} = tx, min) do
+  @spec set_min(Dpos.Tx.t(), pos_integer()) :: Dpos.Tx.t()
+  def set_min(%Dpos.Tx{} = tx, min) when is_integer(min) and min >= 2 do
     ms =
       tx
       |> get_multi_signature()
@@ -31,7 +36,8 @@ defmodule Dpos.Tx.MultiSig do
   Adds a public key to the keysgroup field of the multisignature.
   """
   @spec add_public_key(Dpos.Tx.t(), String.t()) :: Dpos.Tx.t()
-  def add_public_key(%Dpos.Tx{} = tx, pub_key) when is_binary(pub_key) do
+  def add_public_key(%Dpos.Tx{} = tx, pub_key)
+      when is_binary(pub_key) and byte_size(pub_key) == 64 do
     ms =
       tx
       |> get_multi_signature()

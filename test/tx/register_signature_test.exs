@@ -20,7 +20,6 @@ defmodule Dpos.Tx.SecondSignatureTest do
 
   def build_and_sign_tx() do
     wallet = Dpos.Wallet.generate(@delegate_secret)
-
     {_, second_pub_key} = Dpos.Utils.generate_keypair("my secret")
 
     %{fee: @tx.fee, timestamp: @tx.timestamp}

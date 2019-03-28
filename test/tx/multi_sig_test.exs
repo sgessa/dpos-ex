@@ -9,14 +9,14 @@ defmodule Dpos.Tx.MultiSigTest do
     senderPublicKey: "c094ebee7ec0c50ebee32918655e089f6e1a604b83bcaa760293c61e0f18ab6f",
     timestamp: 73_056_420,
     recipientId: nil,
-    id: "5822475998283797000",
+    id: "4885146472837367544",
     fee: 2_000_000_000,
     signature:
-      "28a129d8ddf5a6de0d663e9fef75eab456f335ebe83d3763053fe2123b33198bb6803d9cebef4215fd9c78e9180ed80698333b2f78ffbd7d42e0765f85679f07",
+      "cc5f80d136178e9db65c9679cd7e5421e68917c36c86a9611f8b45e8618c817b8c4c1e58109930515aeffe187492486af35e93dc2f5d5addb53e06e914335e09",
     asset: %{
       multisignature: %{
         min: 2,
-        lifetime: 14,
+        lifetime: 3600,
         keysgroup: [
           "+b65aa5950acf1ade522bcf520f2b2491dcde2f312b4933f56443faff80ad8ebc",
           "+0bc54404ef644519592568687d2bc62593b912a57df319062bb7611b11009ebf",
@@ -29,14 +29,9 @@ defmodule Dpos.Tx.MultiSigTest do
   def build_and_sign_tx() do
     wallet = Dpos.Wallet.generate(@secret)
 
-    tx =
-      Dpos.Tx.MultiSig.build(%{
-        fee: @tx.fee,
-        timestamp: @tx.timestamp
-      })
-
-    tx
-    |> Dpos.Tx.MultiSig.set_lifetime(14)
+    %{fee: @tx.fee, timestamp: @tx.timestamp}
+    |> Dpos.Tx.MultiSig.build()
+    |> Dpos.Tx.MultiSig.set_lifetime(3600)
     |> Dpos.Tx.MultiSig.set_min(2)
     |> Dpos.Tx.MultiSig.add_public_key(
       "6267e1754d4b29cae9007fc0b3f0d435f981c90f70281ce053cb1c2243b848a2"
