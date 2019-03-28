@@ -13,7 +13,7 @@ Add DPoS to your `mix.exs`
 ```elixir
 def deps do
   [
-    {:dpos, "~> 0.3.0"}
+    {:dpos, "~> 0.3.1"}
   ]
 end
 ```
@@ -89,14 +89,15 @@ Dpos.Tx.Send.sign(tx, wallet, second_priv_key)
 Dpos.Tx.Send.sign(tx, {"my secret", "L"})
 
 # Finally we can broadcast our transaction to a remote node (or a local node)
-# Tx.normalize/1 is called by this method so you don't need to normalize it.
 network = [
   nethash: "ed14889723f24ecc54871d058d98ce91ff2f973192075c0155ba2b7b70ad2511",
   version: "1.5.0",
   uri: "http://127.0.0.1:8000"
 ]
 
-Dpos.Net.broadcast(tx, network)
+tx
+|> Dpos.Tx.Send.normalize()
+|> Dpos.Net.broadcast(network)
 ```
 
 ## Contributing
