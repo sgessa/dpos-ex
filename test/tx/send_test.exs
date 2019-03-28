@@ -28,8 +28,8 @@ defmodule Dpos.Tx.SendTest do
       })
 
     tx
-    |> Dpos.Tx.sign(wallet)
-    |> Dpos.Tx.normalize()
+    |> Dpos.Tx.Send.sign(wallet)
+    |> Dpos.Tx.Send.normalize()
   end
 
   describe "send transaction" do

@@ -1,28 +1,18 @@
 defmodule Dpos.Tx.Delegate do
-  alias Dpos.Tx
+  use Dpos.Tx, type: 2
 
-  @type_id 2
-  @amount 0
-
-  def build(attrs) do
-    attrs =
-      attrs
-      |> normalize_asset()
-      |> Tx.validate_timestamp()
-      |> Map.put(:type, @type_id)
-      |> Map.put(:amount, @amount)
-
-    struct!(Tx, attrs)
-  end
-
-  def get_child_bytes(%Tx{asset: %{delegate: %{username: username}}}), do: username
-
-  def normalize(%Tx{} = tx), do: tx
-
-  defp normalize_asset(%{asset: %{delegate: %{username: username}}} = attrs) do
+  @doc """
+  Sets the delegate username to be registered.
+  """
+  @spec set_delegate(Dpos.Tx.t(), String.t()) :: Dpos.Tx.t()
+  def set_delegate(%Dpos.Tx{} = tx, username) when is_binary(username) do
     username = username |> String.downcase() |> String.trim()
-    Map.put(attrs, :asset, %{delegate: %{username: username}})
+    Map.put(tx, :asset, %{delegate: %{username: username}})
   end
 
-  defp normalize_asset(attrs), do: attrs
+  defp get_child_bytes(%{asset: %{delegate: %{username: username}}}) when is_binary(username),
+    do: username
+
+  defp get_child_bytes(_),
+    do: raise("Please set a delegate name\nSee Tx.Delegate.set_delegate/2")
 end

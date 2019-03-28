@@ -1,30 +1,20 @@
 defmodule Dpos.Tx do
-  alias Dpos.Tx
+  import Dpos.Utils, only: [hexdigest: 1]
+
   alias Salty.Sign.Ed25519
 
-  @types %{
-    0 => Tx.Send,
-    1 => Tx.Signature,
-    2 => Tx.Delegate,
-    3 => Tx.Vote,
-    4 => Tx.MultiSig
-  }
-
-  @enforce_keys [
-    :type,
-    :fee,
-    :amount
-  ]
-
-  @optional_keys [
+  @keys [
     :id,
     :recipientId,
     :senderPublicKey,
     :signature,
     :signSignature,
-    :asset,
     :timestamp,
-    address_suffix_length: 1
+    :type,
+    address_suffix_length: 1,
+    amount: 0,
+    asset: %{},
+    fee: 0
   ]
 
   @json_keys [
@@ -41,34 +31,17 @@ defmodule Dpos.Tx do
   ]
 
   @derive {Jason.Encoder, only: @json_keys}
-  defstruct @enforce_keys ++ @optional_keys
+  defstruct @keys
 
-  def sign(tx, wallet_or_secret, second_priv_key \\ nil)
+  @doc """
+  Validates timestamp value.
 
-  def sign(%Tx{} = tx, %Dpos.Wallet{} = wallet, second_priv_key) do
-    tx
-    |> Map.put(:senderPublicKey, wallet.pub_key)
-    |> Map.put(:address_suffix_length, wallet.suffix_length)
-    |> create_signature(wallet.priv_key)
-    |> create_signature(second_priv_key, :signSignature)
-    |> determine_id()
-  end
+  Check if timestamp is present and not negative,
+  otherwise it will be set to `Dpos.Time.now/0`.
+  """
 
-  def sign(%Tx{} = tx, {secret, suffix}, second_priv_key)
-      when is_binary(secret) and is_binary(suffix) do
-    wallet = Dpos.Wallet.generate(secret, suffix)
-    sign(tx, wallet, second_priv_key)
-  end
-
-  def normalize(%Tx{type: type} = tx) do
-    tx
-    |> @types[type].normalize()
-    |> Map.put(:senderPublicKey, Dpos.Utils.hexdigest(tx.senderPublicKey))
-    |> Map.put(:signature, Dpos.Utils.hexdigest(tx.signature))
-    |> Map.put(:signSignature, Dpos.Utils.hexdigest(tx.signSignature))
-  end
-
-  def validate_timestamp(attrs) do
+  @spec validate_timestamp(Map.t()) :: Map.t()
+  def validate_timestamp(attrs) when is_map(attrs) do
     ts = attrs[:timestamp]
 
     if ts && is_integer(ts) && ts >= 0 do
@@ -78,57 +51,106 @@ defmodule Dpos.Tx do
     end
   end
 
-  defp create_signature(tx, priv_key, field \\ :signature)
+  defmacro __using__(keys) do
+    unless keys[:type], do: raise("option 'type' is required")
 
-  defp create_signature(%Tx{} = tx, nil, _field), do: tx
+    quote do
+      @type wallet_or_secret() :: Dpos.Wallet.t() | {String.t(), String.t()}
 
-  defp create_signature(%Tx{} = tx, priv_key, field) do
-    {:ok, signature} =
-      tx
-      |> compute_hash()
-      |> Ed25519.sign_detached(priv_key)
+      @doc """
+      Builds a new transaction.
+      """
+      @spec build(Map.t()) :: Dpos.Tx.t()
+      def build(attrs) do
+        keys = Enum.into(unquote(keys), %{})
 
-    Map.put(tx, field, signature)
+        attrs =
+          attrs
+          |> Map.merge(keys)
+          |> Dpos.Tx.validate_timestamp()
+
+        struct!(Dpos.Tx, attrs)
+      end
+
+      @doc """
+      Signs the transaction with the sender private key.
+
+      It accepts either a `Dpos.Wallet` or a `{"secret", "L"}` tuple as second argument
+      where the first element is the secret and the second element is the address suffix
+      (i.e. `"L"` for Lisk).
+
+      A secondary private_key can also be provided as third argument.
+      """
+      @spec sign(Dpos.Tx.t(), wallet_or_secret, String.t()) :: Dpos.Tx.t()
+      def sign(tx, wallet_or_secret, second_priv_key \\ nil)
+
+      def sign(%Dpos.Tx{} = tx, %Dpos.Wallet{} = wallet, second_priv_key) do
+        tx
+        |> Map.put(:senderPublicKey, wallet.pub_key)
+        |> Map.put(:address_suffix_length, wallet.suffix_length)
+        |> create_signature(wallet.priv_key)
+        |> create_signature(second_priv_key, :signSignature)
+        |> determine_id()
+      end
+
+      def sign(%Dpos.Tx{} = tx, {secret, suffix}, second_priv_key)
+          when is_binary(secret) and is_binary(suffix) do
+        wallet = Dpos.Wallet.generate(secret, suffix)
+        sign(tx, wallet, second_priv_key)
+      end
+
+      @doc """
+      Normalizes the transaction in a format that it could be broadcasted through a relay node.
+      """
+      @spec normalize(Dpos.Tx.t()) :: Dpos.Tx.t()
+      def normalize(%Dpos.Tx{} = tx) do
+        tx
+        |> Map.put(:senderPublicKey, hexdigest(tx.senderPublicKey))
+        |> Map.put(:signature, hexdigest(tx.signature))
+        |> Map.put(:signSignature, hexdigest(tx.signSignature))
+        |> normalize_asset()
+      end
+
+      defp create_signature(tx, priv_key, field \\ :signature)
+
+      defp create_signature(%Dpos.Tx{} = tx, nil, _field), do: tx
+
+      defp create_signature(%Dpos.Tx{} = tx, priv_key, field) do
+        {:ok, signature} =
+          tx
+          |> compute_hash()
+          |> Ed25519.sign_detached(priv_key)
+
+        Map.put(tx, field, signature)
+      end
+
+      defp determine_id(%Dpos.Tx{} = tx) do
+        <<head::bytes-size(8), _rest::bytes>> = compute_hash(tx)
+        id = head |> Dpos.Utils.reverse_binary() |> to_string()
+        Map.put(tx, :id, id)
+      end
+
+      defp compute_hash(%Dpos.Tx{} = tx) do
+        bytes =
+          :erlang.list_to_binary([
+            <<tx.type>>,
+            <<tx.timestamp::little-integer-size(32)>>,
+            <<tx.senderPublicKey::bytes-size(32)>>,
+            Dpos.Utils.address_to_binary(tx.recipientId, tx.address_suffix_length),
+            <<tx.amount::little-integer-size(64)>>,
+            get_child_bytes(tx),
+            Dpos.Utils.signature_to_binary(tx.signature),
+            Dpos.Utils.signature_to_binary(tx.signSignature)
+          ])
+
+        :crypto.hash(:sha256, bytes)
+      end
+
+      defp get_child_bytes(%Dpos.Tx{}), do: ""
+
+      defp normalize_asset(%Dpos.Tx{} = tx), do: tx
+
+      defoverridable get_child_bytes: 1, normalize_asset: 1
+    end
   end
-
-  defp determine_id(%Tx{} = tx) do
-    <<head::bytes-size(8), _rest::bytes>> = compute_hash(tx)
-    id = head |> Dpos.Utils.reverse_binary() |> to_string()
-    Map.put(tx, :id, id)
-  end
-
-  defp compute_hash(%Tx{} = tx) do
-    bytes =
-      :erlang.list_to_binary([
-        <<tx.type>>,
-        <<tx.timestamp::little-integer-size(32)>>,
-        <<tx.senderPublicKey::bytes-size(32)>>,
-        address_to_binary(tx.recipientId, tx.address_suffix_length),
-        <<tx.amount::little-integer-size(64)>>,
-        get_child_bytes(tx),
-        signature_to_binary(tx.signature),
-        signature_to_binary(tx.signSignature)
-      ])
-
-    :crypto.hash(:sha256, bytes)
-  end
-
-  defp address_to_binary(nil, _suffix_length), do: :binary.copy(<<0>>, 8)
-
-  defp address_to_binary(address, suffix_length) do
-    len = String.length(address) - suffix_length
-
-    {int, ""} =
-      address
-      |> String.slice(0..(len - 1))
-      |> Integer.parse()
-
-    <<int::size(64)>>
-  end
-
-  defp signature_to_binary(nil), do: <<>>
-
-  defp signature_to_binary(sig), do: <<sig::bytes-size(64)>>
-
-  defp get_child_bytes(%Tx{type: type} = tx), do: @types[type].get_child_bytes(tx)
 end

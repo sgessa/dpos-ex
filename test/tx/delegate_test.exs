@@ -16,26 +16,19 @@ defmodule Dpos.Tx.DelegateTest do
     fee: 2_500_000_000
   }
 
-  def build_and_sign_tx(asset) do
+  def build_and_sign_tx() do
     wallet = Dpos.Wallet.generate(@delegate_secret)
 
-    tx =
-      Dpos.Tx.Delegate.build(%{
-        fee: @tx.fee,
-        timestamp: @tx.timestamp,
-        senderPublicKey: wallet.pub_key,
-        asset: asset
-      })
-
-    tx
-    |> Dpos.Tx.sign(wallet)
-    |> Dpos.Tx.normalize()
+    %{fee: @tx.fee, timestamp: @tx.timestamp}
+    |> Dpos.Tx.Delegate.build()
+    |> Dpos.Tx.Delegate.set_delegate("genesis_1")
+    |> Dpos.Tx.Delegate.sign(wallet)
+    |> Dpos.Tx.Delegate.normalize()
   end
 
   describe "delegate transaction" do
     test "should match example tx" do
-      tx = build_and_sign_tx(@tx.asset)
-      assert tx == @tx
+      assert build_and_sign_tx() == @tx
     end
   end
 end

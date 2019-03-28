@@ -1,20 +1,22 @@
 defmodule Dpos.Tx.Signature do
-  alias Dpos.Tx
+  use Dpos.Tx, type: 1
 
-  @type_id 1
-  @amount 0
-
-  def build(attrs) do
-    attrs =
-      attrs
-      |> Tx.validate_timestamp()
-      |> Map.put(:type, @type_id)
-      |> Map.put(:amount, @amount)
-
-    struct!(Tx, attrs)
+  @doc """
+  Sets the public key to register for second signature.
+  """
+  @spec set_public_key(Dpos.Tx.t(), String.t()) :: Dpos.Tx.t()
+  def set_public_key(%Dpos.Tx{} = tx, pub_key) when is_binary(pub_key) do
+    Map.put(tx, :asset, %{signature: %{publicKey: pub_key}})
   end
 
-  def get_child_bytes(%Dpos.Tx{asset: %{signature: %{pub_key: pk}}}), do: <<pk::bytes>>
+  defp get_child_bytes(%{asset: %{signature: %{publicKey: pk}}}), do: <<pk::bytes>>
 
-  def normalize(%Dpos.Tx{} = tx), do: tx
+  defp get_child_bytes(_) do
+    "Please set the publick key you would like to register\nSee Tx.Signature.set_public_key/2"
+    |> raise()
+  end
+
+  defp normalize_asset(%{asset: %{signature: %{publicKey: pk}}} = tx) do
+    Map.put(tx, :asset, %{signature: %{publicKey: Dpos.Utils.hexdigest(pk)}})
+  end
 end

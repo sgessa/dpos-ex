@@ -20,27 +20,25 @@ defmodule Dpos.Tx.VoteTest do
     }
   }
 
-  def build_and_sign_tx(asset \\ %{}) do
+  def build_and_sign_tx() do
     wallet = Dpos.Wallet.generate(@secret)
 
     tx =
       Dpos.Tx.Vote.build(%{
         fee: @tx.fee,
         timestamp: @tx.timestamp,
-        senderPublicKey: wallet.pub_key,
-        recipientId: @tx.recipientId,
-        asset: asset
+        recipientId: @tx.recipientId
       })
 
     tx
-    |> Dpos.Tx.sign(wallet)
-    |> Dpos.Tx.normalize()
+    |> Dpos.Tx.Vote.vote("01389197bbaf1afb0acd47bbfeabb34aca80fb372a8f694a1c0716b3398db746")
+    |> Dpos.Tx.Vote.sign(wallet)
+    |> Dpos.Tx.Vote.normalize()
   end
 
   describe "vote transaction" do
     test "should match example tx" do
-      tx = build_and_sign_tx(@tx.asset)
-      assert tx == @tx
+      assert build_and_sign_tx() == @tx
     end
   end
 end

@@ -62,10 +62,10 @@ wallet = Dpos.Wallet.generate(secret, "XYZ")
 tx =
   %{amount: 10_000_000_000, fee: 10_000_000, recipientId: "9961568538380190560LWF"}
   |> Dpos.Tx.Send.build()
-  |> Dpos.Tx.sign(wallet)
+  |> Dpos.Tx.Send.sign(wallet)
 
 # The transaction can be normalized to be easier to read
-tx |> Dpos.Tx.normalize() |> IO.inspect()
+tx |> Dpos.Tx.Send.normalize() |> IO.inspect()
 
 # Output
 %Dpos.Tx{
@@ -83,10 +83,10 @@ tx |> Dpos.Tx.normalize() |> IO.inspect()
 }
 
 # Optional: signing the tx using a second private key
-Dpos.Tx.sign(tx, wallet, second_priv_key)
+Dpos.Tx.Send.sign(tx, wallet, second_priv_key)
 
 # It is possible to pass a secret/suffix tuple as second argument to Tx.sign/3:
-Dpos.Tx.sign(tx, {"my secret", "L"})
+Dpos.Tx.Send.sign(tx, {"my secret", "L"})
 
 # Finally we can broadcast our transaction to a remote node (or a local node)
 # Tx.normalize/1 is called by this method so you don't need to normalize it.

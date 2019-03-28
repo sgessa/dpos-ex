@@ -25,15 +25,14 @@ defmodule Dpos.Tx.SendSecondSigTest do
     tx =
       Dpos.Tx.Send.build(%{
         amount: @tx.amount,
-        fee: @tx.fee,
         timestamp: @tx.timestamp,
-        senderPublicKey: wallet.pub_key,
+        fee: @tx.fee,
         recipientId: @tx.recipientId
       })
 
     tx
-    |> Dpos.Tx.sign(wallet, second_priv_key)
-    |> Dpos.Tx.normalize()
+    |> Dpos.Tx.Send.sign(wallet, second_priv_key)
+    |> Dpos.Tx.Send.normalize()
   end
 
   describe "send transaction" do

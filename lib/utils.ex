@@ -41,4 +41,21 @@ defmodule Dpos.Utils do
 
   def hexdigest(nil), do: nil
   def hexdigest(b), do: Base.encode16(b, case: :lower)
+
+  def address_to_binary(nil, _suffix_length), do: :binary.copy(<<0>>, 8)
+
+  def address_to_binary(address, suffix_length) do
+    len = String.length(address) - suffix_length
+
+    {int, ""} =
+      address
+      |> String.slice(0..(len - 1))
+      |> Integer.parse()
+
+    <<int::size(64)>>
+  end
+
+  def signature_to_binary(nil), do: <<>>
+
+  def signature_to_binary(sig) when is_binary(sig), do: <<sig::bytes-size(64)>>
 end
