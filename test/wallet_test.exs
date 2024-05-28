@@ -14,7 +14,7 @@ defmodule Dpos.WalletTest do
       wallet = Wallet.generate_shift(@wallet.secret)
 
       assert wallet == Wallet.generate(@wallet.secret, "S")
-      assert byte_size(wallet.priv_key) == 64
+      assert byte_size(wallet.priv_key) == 32
       assert byte_size(wallet.pub_key) == 32
       assert Base.encode16(wallet.pub_key, case: :lower) == @wallet.pub_key
       assert wallet.address == @wallet.address

@@ -4,7 +4,7 @@ defmodule Dpos.Tx.Delegate do
   @doc """
   Sets the delegate username to be registered.
   """
-  @spec set_delegate(Dpos.Tx.t(), String.t()) :: Dpos.Tx.t()
+  @spec set_delegate(%Dpos.Tx{}, String.t()) :: %Dpos.Tx{}
   def set_delegate(%Dpos.Tx{} = tx, username) when is_binary(username) do
     username = username |> String.downcase() |> String.trim()
     Map.put(tx, :asset, %{delegate: %{username: username}})
