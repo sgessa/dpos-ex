@@ -4,7 +4,7 @@ defmodule Dpos.Tx.Signature do
   @doc """
   Sets the public key to register for second signature.
   """
-  @spec set_public_key(Dpos.Tx.t(), binary()) :: Dpos.Tx.t()
+  @spec set_public_key(%Dpos.Tx{}, binary()) :: %Dpos.Tx{}
   def set_public_key(%Dpos.Tx{} = tx, pub_key)
       when is_binary(pub_key) and byte_size(pub_key) == 32 do
     Map.put(tx, :asset, %{signature: %{publicKey: pub_key}})

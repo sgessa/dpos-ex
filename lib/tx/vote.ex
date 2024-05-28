@@ -4,7 +4,7 @@ defmodule Dpos.Tx.Vote do
   @doc """
   Adds the delegate's public key to vote.
   """
-  @spec vote(Dpos.Tx.t(), String.t()) :: Dpos.Tx.t()
+  @spec vote(%Dpos.Tx{}, String.t()) :: %Dpos.Tx{}
   def vote(%Dpos.Tx{} = tx, pub_key) when is_binary(pub_key) and byte_size(pub_key) == 64 do
     vote(tx, "+", pub_key)
   end
@@ -12,7 +12,7 @@ defmodule Dpos.Tx.Vote do
   @doc """
   Adds the delegate's public key to unvote.
   """
-  @spec unvote(Dpos.Tx.t(), String.t()) :: Dpos.Tx.t()
+  @spec unvote(%Dpos.Tx{}, String.t()) :: %Dpos.Tx{}
   def unvote(%Dpos.Tx{} = tx, pub_key) when is_binary(pub_key) and byte_size(pub_key) == 64 do
     vote(tx, "-", pub_key)
   end

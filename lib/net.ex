@@ -13,7 +13,7 @@ defmodule Dpos.Net do
   The transaction must be already normalized.
   """
   @type network() :: [uri: String.t(), nethash: String.t(), version: String.t()]
-  @spec broadcast(Dpos.Tx.t(), network()) :: {:ok, String.t()} | {:error, term}
+  @spec broadcast(%Dpos.Tx{}, network()) :: {:ok, String.t()} | {:error, term}
   def broadcast(tx, net) when is_list(net) do
     with :ok <- validate_network(net),
          {:ok, resp} <- request(net, %{transaction: tx}),

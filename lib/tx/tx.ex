@@ -1,7 +1,7 @@
 defmodule Dpos.Tx do
   import Dpos.Utils, only: [hexdigest: 1]
 
-  alias Salty.Sign.Ed25519
+  alias Dpos.Crypto.Ed25519
 
   @keys [
     :id,
@@ -39,8 +39,7 @@ defmodule Dpos.Tx do
   Check if timestamp is present and not negative,
   otherwise it will be set to `Dpos.Time.now/0`.
   """
-
-  @spec validate_timestamp(Map.t()) :: Map.t()
+  @spec validate_timestamp(map()) :: map()
   def validate_timestamp(attrs) when is_map(attrs) do
     ts = attrs[:timestamp]
 
@@ -55,12 +54,12 @@ defmodule Dpos.Tx do
     unless keys[:type], do: raise("option 'type' is required")
 
     quote do
-      @type wallet_or_secret() :: Dpos.Wallet.t() | {String.t(), String.t()}
+      @type wallet_or_secret() :: %Dpos.Wallet{} | {String.t(), String.t()}
 
       @doc """
       Builds a new transaction.
       """
-      @spec build(Map.t()) :: Dpos.Tx.t()
+      @spec build(map()) :: %Dpos.Tx{}
       def build(attrs) do
         keys = Enum.into(unquote(keys), %{})
 
@@ -81,7 +80,7 @@ defmodule Dpos.Tx do
 
       A secondary private_key can also be provided as third argument.
       """
-      @spec sign(Dpos.Tx.t(), wallet_or_secret, binary()) :: Dpos.Tx.t()
+      @spec sign(%Dpos.Tx{}, wallet_or_secret, binary()) :: %Dpos.Tx{}
       def sign(tx, wallet_or_secret, second_priv_key \\ nil)
 
       def sign(%Dpos.Tx{} = tx, %Dpos.Wallet{} = wallet, second_priv_key) do
@@ -102,7 +101,7 @@ defmodule Dpos.Tx do
       @doc """
       Normalizes the transaction in a format that it could be broadcasted through a relay node.
       """
-      @spec normalize(Dpos.Tx.t()) :: Dpos.Tx.t()
+      @spec normalize(%Dpos.Tx{}) :: %Dpos.Tx{}
       def normalize(%Dpos.Tx{} = tx) do
         tx
         |> Map.put(:senderPublicKey, hexdigest(tx.senderPublicKey))
@@ -119,7 +118,7 @@ defmodule Dpos.Tx do
         {:ok, signature} =
           tx
           |> compute_hash()
-          |> Ed25519.sign_detached(priv_key)
+          |> Ed25519.sign(priv_key)
 
         Map.put(tx, field, signature)
       end

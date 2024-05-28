@@ -20,7 +20,7 @@ defmodule Dpos.Tx.SendSecondSigTest do
 
   def build_and_sign_tx() do
     wallet = Dpos.Wallet.generate(@secret)
-    {second_priv_key, _} = Dpos.Utils.generate_keypair(@second_secret)
+    {:ok, second_priv_key, _} = Dpos.Utils.seed_keypair(@second_secret)
 
     tx =
       Dpos.Tx.Send.build(%{

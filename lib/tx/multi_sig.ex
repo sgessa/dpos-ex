@@ -6,7 +6,7 @@ defmodule Dpos.Tx.MultiSig do
 
   The lifetime must be >= 3600 and <= 259200.
   """
-  @spec set_lifetime(Dpos.Tx.t(), pos_integer) :: Dpos.Tx.t()
+  @spec set_lifetime(%Dpos.Tx{}, pos_integer) :: %Dpos.Tx{}
   def set_lifetime(%Dpos.Tx{} = tx, ttl)
       when is_integer(ttl) and ttl >= 3600 and ttl <= 259_200 do
     ms =
@@ -22,7 +22,7 @@ defmodule Dpos.Tx.MultiSig do
 
   The minimum possible value is 2.
   """
-  @spec set_min(Dpos.Tx.t(), pos_integer()) :: Dpos.Tx.t()
+  @spec set_min(%Dpos.Tx{}, pos_integer()) :: %Dpos.Tx{}
   def set_min(%Dpos.Tx{} = tx, min) when is_integer(min) and min >= 2 do
     ms =
       tx
@@ -35,7 +35,7 @@ defmodule Dpos.Tx.MultiSig do
   @doc """
   Adds a public key to the keysgroup field of the multisignature.
   """
-  @spec add_public_key(Dpos.Tx.t(), String.t()) :: Dpos.Tx.t()
+  @spec add_public_key(%Dpos.Tx{}, String.t()) :: %Dpos.Tx{}
   def add_public_key(%Dpos.Tx{} = tx, pub_key)
       when is_binary(pub_key) and byte_size(pub_key) == 64 do
     ms =

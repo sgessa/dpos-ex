@@ -10,7 +10,7 @@ defmodule Dpos.MixProject do
     [
       app: :dpos,
       version: @version,
-      elixir: "~> 1.6",
+      elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
 
@@ -32,7 +32,6 @@ defmodule Dpos.MixProject do
   defp deps do
     [
       {:ex_doc, "~> 0.16", only: :dev, runtime: false},
-      {:salty, "~> 0.1.3", hex: :libsalty},
       {:httpoison, "~> 1.0"},
       {:jason, "~> 1.0"}
     ]

@@ -1,18 +1,17 @@
 defmodule Dpos.Utils do
-  alias Salty.Sign.Ed25519
+  alias Dpos.Crypto.Ed25519
 
   @doc """
-  Signs a message using the wallet private key.
+  Seed a keypair from a secret key.
   """
-  @type keypair() :: {binary(), binary()}
-  @spec generate_keypair(String.t()) :: keypair()
-  def generate_keypair(secret) when is_binary(secret) do
+  @spec seed_keypair(String.t()) :: {:ok, binary(), binary()}
+  def seed_keypair(secret) when is_binary(secret) do
     {:ok, pk, sk} =
       :sha256
       |> :crypto.hash(secret)
       |> Ed25519.seed_keypair()
 
-    {sk, pk}
+    {:ok, sk, pk}
   end
 
   @doc """
@@ -30,7 +29,7 @@ defmodule Dpos.Utils do
   @spec verify_message(String.t(), binary(), binary()) :: :ok
   def verify_message(msg, sig, pub_key)
       when is_binary(msg) and is_binary(sig) and is_binary(pub_key) and byte_size(pub_key) == 32 do
-    Ed25519.verify_detached(sig, msg, pub_key)
+    Ed25519.verify_detached(msg, sig, pub_key)
   end
 
   @doc """
@@ -51,7 +50,7 @@ defmodule Dpos.Utils do
   @doc """
   Reverses the given binary (from little-endian to big-endian).
   """
-  @spec reverse_binary(binary()) :: Integer.t()
+  @spec reverse_binary(binary()) :: integer()
   def reverse_binary(bin) when is_binary(bin) do
     {int, ""} =
       bin
