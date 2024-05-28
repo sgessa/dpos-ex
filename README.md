@@ -4,10 +4,6 @@ An Elixir port of vekexasia's [dpos-offline](https://www.npmjs.com/package/dpos-
 
 ## Installation
 
-Install libsodium development headers:
-
-`apt install -y libsodium-dev`
-
 Add DPoS to your `mix.exs`
 
 ```elixir
@@ -24,9 +20,6 @@ end
 
 ```elixir
 secret = "my secret"
-
-# For LWF
-lwf_wallet = Dpos.Wallet.generate_lwf(secret)
 
 # For Lisk
 lisk_wallet = Dpos.Wallet.generate_lisk(secret)
