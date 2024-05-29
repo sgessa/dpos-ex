@@ -14,6 +14,7 @@ defmodule Dpos.Tx.Normalized do
     fee: 0
   ]
 
+  @derive Jason.Encoder
   defstruct @keys
 
   @doc """

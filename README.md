@@ -50,7 +50,7 @@ iex> :ok = Dpos.Wallet.verify_message(wallet, "My Signed Message", signature)
 
 ```elixir
 iex> tx = \
-iex>  %{amount: 10_000_000_000, fee: 10_000_000, recipientId: "2340651171948227443XYZ"} \
+iex>  %{amount: 10_000_000_000, fee: 10_000_000, recipient: "2340651171948227443XYZ"} \
 iex>  |> Dpos.Tx.Send.build() \
 iex>  |> Dpos.Tx.Send.sign(wallet)
 
@@ -68,11 +68,11 @@ iex>   uri: "http://127.0.0.1:8000"
 iex> ]
 
 iex> tx
-iex> |> Dpos.Tx.Send.normalize()
+iex> |> Dpos.Tx.normalize()
 iex> |> Dpos.Net.broadcast(network)
 
 # The transaction can be normalized to be easier to read and to be broadcasted to a remote node
-iex> Dpos.Tx.Send.normalize(tx)
+iex> Dpos.Tx.normalize(tx)
 %Dpos.Tx{
   id: "14577272354830356516",
   recipientId: "2340651171948227443XYZ",
