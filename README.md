@@ -88,6 +88,37 @@ iex> Tx.normalize(tx)
 }
 ```
 
+## Custom Transactions
+
+You can implement the `Dpos.Tx` behaviour in order to create your own transaction types.
+
+The behaviour requires you to implement 2 functions, `type_id/0` and `get_child_bytes/1`.
+
+Example:
+
+```elixir
+defmodule MyApp.Transaction do
+  @behaviour Dpos.Tx
+
+  @impl Dpos.Tx
+  def type_id do
+    # The integer value that will be used in the `type` field.
+    3333
+  end
+
+  @impl Dpos.Tx
+  def get_child_bytes(%Tx{}) do
+    # This function must return a binary.
+    #
+    # If your transaction uses custom fields you'd need to implement a logic to compute these fields,
+    # otherwise return an empty binary.
+    #
+    # See `Dpos.Tx.Vote` for your reference.
+  end
+end
+
+```
+
 ## Contributing
 
 Clone the repository and run `$ mix test` to make sure everything is working.
