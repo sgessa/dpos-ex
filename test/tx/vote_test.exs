@@ -1,9 +1,11 @@
-defmodule Dpos.Tx.VoteTest do
+defmodule Tx.VoteTest do
   use ExUnit.Case
+
+  alias Dpos.Tx
 
   @secret "wagon stock borrow episode laundry kitten salute link globe zero feed marble"
 
-  @tx %Dpos.Tx{
+  @tx %Tx{
     type: 3,
     amount: 0,
     senderPublicKey: "c094ebee7ec0c50ebee32918655e089f6e1a604b83bcaa760293c61e0f18ab6f",
@@ -24,16 +26,16 @@ defmodule Dpos.Tx.VoteTest do
     wallet = Dpos.Wallet.generate(@secret)
 
     tx =
-      Dpos.Tx.Vote.build(%{
+      Tx.Vote.build(%{
         fee: @tx.fee,
         timestamp: @tx.timestamp,
         recipientId: @tx.recipientId
       })
 
     tx
-    |> Dpos.Tx.Vote.vote("01389197bbaf1afb0acd47bbfeabb34aca80fb372a8f694a1c0716b3398db746")
-    |> Dpos.Tx.Vote.sign(wallet)
-    |> Dpos.Tx.Vote.normalize()
+    |> Tx.Vote.vote("01389197bbaf1afb0acd47bbfeabb34aca80fb372a8f694a1c0716b3398db746")
+    |> Tx.Vote.sign(wallet)
+    |> Tx.normalize()
   end
 
   describe "vote transaction" do

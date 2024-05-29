@@ -1,10 +1,12 @@
-defmodule Dpos.Tx.SendSecondSigTest do
+defmodule Tx.SendSecondSigTest do
   use ExUnit.Case
+
+  alias Dpos.Tx
 
   @secret "jump bicycle member exist glare hip hero burger volume cover route rare"
   @second_secret "autumn foil east grape walnut mother hello favorite wink shaft fancy about"
 
-  @tx %Dpos.Tx{
+  @tx %Tx{
     type: 0,
     amount: 15,
     senderPublicKey: "904c294899819cce0283d8d351cb10febfa0e9f0acd90a820ec8eb90a7084c37",
@@ -23,7 +25,7 @@ defmodule Dpos.Tx.SendSecondSigTest do
     {:ok, second_priv_key, _} = Dpos.Utils.seed_keypair(@second_secret)
 
     tx =
-      Dpos.Tx.Send.build(%{
+      Tx.Send.build(%{
         amount: @tx.amount,
         timestamp: @tx.timestamp,
         fee: @tx.fee,
@@ -31,8 +33,8 @@ defmodule Dpos.Tx.SendSecondSigTest do
       })
 
     tx
-    |> Dpos.Tx.Send.sign(wallet, second_priv_key)
-    |> Dpos.Tx.Send.normalize()
+    |> Tx.Send.sign(wallet, second_priv_key)
+    |> Tx.normalize()
   end
 
   describe "send transaction" do

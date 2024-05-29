@@ -1,6 +1,4 @@
 defmodule Dpos.Tx do
-  import Dpos.Utils, only: [hexdigest: 1]
-
   alias Dpos.Crypto.Ed25519
 
   @keys [
@@ -17,20 +15,6 @@ defmodule Dpos.Tx do
     fee: 0
   ]
 
-  @json_keys [
-    :id,
-    :type,
-    :fee,
-    :amount,
-    :recipientId,
-    :senderPublicKey,
-    :signature,
-    :signSignature,
-    :timestamp,
-    :asset
-  ]
-
-  @derive {Jason.Encoder, only: @json_keys}
   defstruct @keys
 
   @doc """
@@ -48,6 +32,10 @@ defmodule Dpos.Tx do
     else
       Map.put(attrs, :timestamp, Dpos.Time.now())
     end
+  end
+
+  def normalize(%Dpos.Tx{} = tx) do
+    Dpos.NormalizedTx.normalize(tx)
   end
 
   defmacro __using__(keys) do
@@ -98,18 +86,6 @@ defmodule Dpos.Tx do
         sign(tx, wallet, second_priv_key)
       end
 
-      @doc """
-      Normalizes the transaction in a format that it could be broadcasted through a relay node.
-      """
-      @spec normalize(%Dpos.Tx{}) :: %Dpos.Tx{}
-      def normalize(%Dpos.Tx{} = tx) do
-        tx
-        |> Map.put(:senderPublicKey, hexdigest(tx.senderPublicKey))
-        |> Map.put(:signature, hexdigest(tx.signature))
-        |> Map.put(:signSignature, hexdigest(tx.signSignature))
-        |> normalize_asset()
-      end
-
       defp create_signature(tx, priv_key, field \\ :signature)
 
       defp create_signature(%Dpos.Tx{} = tx, nil, _field), do: tx
@@ -147,9 +123,7 @@ defmodule Dpos.Tx do
 
       defp get_child_bytes(%Dpos.Tx{}), do: ""
 
-      defp normalize_asset(%Dpos.Tx{} = tx), do: tx
-
-      defoverridable get_child_bytes: 1, normalize_asset: 1
+      defoverridable get_child_bytes: 1
     end
   end
 end
