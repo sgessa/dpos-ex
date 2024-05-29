@@ -1,9 +1,11 @@
-defmodule Dpos.Tx.SendTest do
+defmodule Tx.SendTest do
   use ExUnit.Case
+
+  alias Dpos.{Tx, Wallet}
 
   @secret "wagon stock borrow episode laundry kitten salute link globe zero feed marble"
 
-  @tx %Dpos.Tx{
+  @tx %Tx.Normalized{
     type: 0,
     amount: 8840,
     senderPublicKey: "c094ebee7ec0c50ebee32918655e089f6e1a604b83bcaa760293c61e0f18ab6f",
@@ -16,20 +18,20 @@ defmodule Dpos.Tx.SendTest do
   }
 
   def build_and_sign_tx() do
-    wallet = Dpos.Wallet.generate(@secret)
+    wallet = Wallet.generate(@secret)
 
     tx =
-      Dpos.Tx.Send.build(%{
+      Tx.build(Tx.Send, %{
         amount: @tx.amount,
         fee: @tx.fee,
         timestamp: @tx.timestamp,
-        senderPublicKey: wallet.pub_key,
-        recipientId: @tx.recipientId
+        public_key: wallet.pub_key,
+        recipient: @tx.recipientId
       })
 
     tx
-    |> Dpos.Tx.Send.sign(wallet)
-    |> Dpos.Tx.Send.normalize()
+    |> Tx.sign(wallet)
+    |> Tx.normalize()
   end
 
   describe "send transaction" do

@@ -19,7 +19,7 @@ defmodule Dpos.Utils do
   """
   @spec sign_message(String.t(), binary()) :: {:ok, binary()}
   def sign_message(msg, priv_key)
-      when is_binary(msg) and is_binary(priv_key) and byte_size(priv_key) == 64 do
+      when is_binary(msg) and is_binary(priv_key) and byte_size(priv_key) == 32 do
     Ed25519.sign(msg, priv_key)
   end
 

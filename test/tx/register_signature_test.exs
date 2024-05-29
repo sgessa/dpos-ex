@@ -1,9 +1,11 @@
-defmodule Dpos.Tx.SecondSignatureTest do
+defmodule Tx.SecondSignatureTest do
   use ExUnit.Case
+
+  alias Dpos.{Tx, Utils, Wallet}
 
   @delegate_secret "robust swift grocery peasant forget share enable convince deputy road keep cheap"
 
-  @tx %Dpos.Tx{
+  @tx %Tx.Normalized{
     type: 1,
     amount: 0,
     fee: 2_500_000_000,
@@ -19,14 +21,14 @@ defmodule Dpos.Tx.SecondSignatureTest do
   }
 
   def build_and_sign_tx() do
-    wallet = Dpos.Wallet.generate(@delegate_secret)
-    {:ok, _, second_pub_key} = Dpos.Utils.seed_keypair("my secret")
+    wallet = Wallet.generate(@delegate_secret)
+    {:ok, _, second_pub_key} = Utils.seed_keypair("my secret")
 
-    %{fee: @tx.fee, timestamp: @tx.timestamp}
-    |> Dpos.Tx.Signature.build()
-    |> Dpos.Tx.Signature.set_public_key(second_pub_key)
-    |> Dpos.Tx.Signature.sign(wallet)
-    |> Dpos.Tx.Signature.normalize()
+    Tx.Signature
+    |> Tx.build(%{fee: @tx.fee, timestamp: @tx.timestamp})
+    |> Tx.Signature.set_public_key(second_pub_key)
+    |> Tx.sign(wallet)
+    |> Tx.normalize()
   end
 
   describe "register signature transaction" do
