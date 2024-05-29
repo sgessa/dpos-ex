@@ -5,7 +5,7 @@ defmodule Tx.SendTest do
 
   @secret "wagon stock borrow episode laundry kitten salute link globe zero feed marble"
 
-  @tx %Tx{
+  @tx %Tx.Normalized{
     type: 0,
     amount: 8840,
     senderPublicKey: "c094ebee7ec0c50ebee32918655e089f6e1a604b83bcaa760293c61e0f18ab6f",
@@ -25,8 +25,8 @@ defmodule Tx.SendTest do
         amount: @tx.amount,
         fee: @tx.fee,
         timestamp: @tx.timestamp,
-        senderPublicKey: wallet.pub_key,
-        recipientId: @tx.recipientId
+        public_key: wallet.pub_key,
+        recipient: @tx.recipientId
       })
 
     tx

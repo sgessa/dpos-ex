@@ -5,7 +5,7 @@ defmodule Tx.MultiSigTest do
 
   @secret "wagon stock borrow episode laundry kitten salute link globe zero feed marble"
 
-  @tx %Tx{
+  @tx %Tx.Normalized{
     type: 4,
     amount: 0,
     senderPublicKey: "c094ebee7ec0c50ebee32918655e089f6e1a604b83bcaa760293c61e0f18ab6f",

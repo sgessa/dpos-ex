@@ -6,7 +6,7 @@ defmodule Tx.SendSecondSigTest do
   @secret "jump bicycle member exist glare hip hero burger volume cover route rare"
   @second_secret "autumn foil east grape walnut mother hello favorite wink shaft fancy about"
 
-  @tx %Tx{
+  @tx %Tx.Normalized{
     type: 0,
     amount: 15,
     senderPublicKey: "904c294899819cce0283d8d351cb10febfa0e9f0acd90a820ec8eb90a7084c37",
@@ -29,7 +29,7 @@ defmodule Tx.SendSecondSigTest do
         amount: @tx.amount,
         timestamp: @tx.timestamp,
         fee: @tx.fee,
-        recipientId: @tx.recipientId
+        recipient: @tx.recipientId
       })
 
     tx

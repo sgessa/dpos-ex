@@ -5,7 +5,7 @@ defmodule Tx.DelegateTest do
 
   @delegate_secret "robust swift grocery peasant forget share enable convince deputy road keep cheap"
 
-  @tx %Tx{
+  @tx %Tx.Normalized{
     type: 2,
     amount: 0,
     senderPublicKey: "9d3058175acab969f41ad9b86f7a2926c74258670fe56b37c429c01fca9f2f0f",

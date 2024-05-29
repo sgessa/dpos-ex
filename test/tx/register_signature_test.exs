@@ -5,7 +5,7 @@ defmodule Tx.SecondSignatureTest do
 
   @delegate_secret "robust swift grocery peasant forget share enable convince deputy road keep cheap"
 
-  @tx %Tx{
+  @tx %Tx.Normalized{
     type: 1,
     amount: 0,
     fee: 2_500_000_000,

@@ -1,11 +1,11 @@
 defmodule Tx.VoteTest do
   use ExUnit.Case
 
-  alias Dpos.Tx
+  alias Dpos.{Tx, Wallet}
 
   @secret "wagon stock borrow episode laundry kitten salute link globe zero feed marble"
 
-  @tx %Tx{
+  @tx %Tx.Normalized{
     type: 3,
     amount: 0,
     senderPublicKey: "c094ebee7ec0c50ebee32918655e089f6e1a604b83bcaa760293c61e0f18ab6f",
@@ -23,13 +23,13 @@ defmodule Tx.VoteTest do
   }
 
   def build_and_sign_tx() do
-    wallet = Dpos.Wallet.generate(@secret)
+    wallet = Wallet.generate(@secret)
 
     tx =
       Tx.Vote.build(%{
         fee: @tx.fee,
         timestamp: @tx.timestamp,
-        recipientId: @tx.recipientId
+        recipient: @tx.recipientId
       })
 
     tx

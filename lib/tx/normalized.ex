@@ -9,37 +9,26 @@ defmodule Dpos.Tx.Normalized do
     :signSignature,
     :timestamp,
     :type,
-    address_suffix_length: 1,
     amount: 0,
     asset: %{},
     fee: 0
   ]
 
-  @json_keys [
-    :id,
-    :type,
-    :fee,
-    :amount,
-    :recipientId,
-    :senderPublicKey,
-    :signature,
-    :signSignature,
-    :timestamp,
-    :asset
-  ]
-
-  @derive {Jason.Encoder, only: @json_keys}
   defstruct @keys
 
   @doc """
   Normalizes the transaction in a format that it could be broadcasted through a relay node.
   """
-  @spec normalize(%Tx{}) :: %Tx{}
+  @spec normalize(%Tx{}) :: %Tx.Normalized{}
   def normalize(%Tx{} = tx) do
-    tx
-    |> Map.put(:senderPublicKey, Utils.hexdigest(tx.senderPublicKey))
+    attrs = Map.take(tx, [:id, :type, :timestamp, :amount, :fee, :asset])
+
+    %__MODULE__{}
+    |> Map.merge(attrs)
+    |> Map.put(:recipientId, tx.recipient)
+    |> Map.put(:senderPublicKey, Utils.hexdigest(tx.public_key))
     |> Map.put(:signature, Utils.hexdigest(tx.signature))
-    |> Map.put(:signSignature, Utils.hexdigest(tx.signSignature))
+    |> Map.put(:signSignature, Utils.hexdigest(tx.sign_signature))
     |> normalize_asset()
   end
 
