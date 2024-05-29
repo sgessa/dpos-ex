@@ -1,4 +1,8 @@
 defmodule Dpos.Time do
+  @moduledoc """
+  Provides functions to work with Lisk timestamps.
+  """
+
   @lisk_epoch "2016-05-24T17:00:00.000Z"
 
   @doc """
@@ -15,7 +19,7 @@ defmodule Dpos.Time do
   Returns the current Lisk timestamp.
   """
   @spec now() :: integer()
-  def now() do
+  def now do
     now = DateTime.to_unix(DateTime.utc_now())
     {:ok, start, 0} = DateTime.from_iso8601(@lisk_epoch)
     start = DateTime.to_unix(start)

@@ -20,7 +20,7 @@ defmodule Tx.SendSecondSigTest do
     fee: 10_000_000
   }
 
-  def build_and_sign_tx() do
+  def build_and_sign_tx do
     wallet = Dpos.Wallet.generate(@secret)
     {:ok, second_priv_key, _} = Dpos.Utils.seed_keypair(@second_secret)
 

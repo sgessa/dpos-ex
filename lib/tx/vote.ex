@@ -1,4 +1,16 @@
 defmodule Dpos.Tx.Vote do
+  @moduledoc """
+  A transaction to vote or unvote delegates.
+
+  Example:
+
+  Tx.Vote
+  |> Tx.build(%{fee: 100000000, recipient: "16313739661670634666L"})
+  |> Tx.Vote.vote("01389197bbaf1afb0acd47bbfeabb34aca80fb372a8f694a1c0716b3398db746")
+  |> Tx.sign(wallet)
+  |> Tx.normalize()
+  """
+
   alias Dpos.Tx
 
   @behaviour Tx
@@ -23,7 +35,7 @@ defmodule Dpos.Tx.Vote do
   @doc """
   Adds the delegate's public key to vote.
   """
-  @spec vote(%Tx{}, String.t()) :: %Tx{}
+  @spec vote(Tx.t(), String.t()) :: Tx.t()
   def vote(%Tx{} = tx, pub_key) when is_binary(pub_key) and byte_size(pub_key) == 64 do
     vote(tx, "+", pub_key)
   end
@@ -31,7 +43,7 @@ defmodule Dpos.Tx.Vote do
   @doc """
   Adds the delegate's public key to unvote.
   """
-  @spec unvote(%Tx{}, String.t()) :: %Tx{}
+  @spec unvote(Tx.t(), String.t()) :: Tx.t()
   def unvote(%Tx{} = tx, pub_key) when is_binary(pub_key) and byte_size(pub_key) == 64 do
     vote(tx, "-", pub_key)
   end

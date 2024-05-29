@@ -1,4 +1,8 @@
 defmodule Dpos.Utils do
+  @moduledoc """
+  Utility functions for DPoS.
+  """
+
   alias Dpos.Crypto.Ed25519
 
   @doc """

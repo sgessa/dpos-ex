@@ -20,13 +20,13 @@ defmodule Tx.SecondSignatureTest do
       "21251e1652df90191d3fbf74ee2426b0bf6e6302e666ad1d301410f4ec7a47755dc9e57003eef26cf18e0f3c60a31e80a8c9a38becc89b5bae47f50692fff100"
   }
 
-  def build_and_sign_tx() do
+  def build_and_sign_tx do
     wallet = Wallet.generate(@delegate_secret)
     {:ok, _, second_pub_key} = Utils.seed_keypair("my secret")
 
-    Tx.Signature
+    Tx.SecondSignature
     |> Tx.build(%{fee: @tx.fee, timestamp: @tx.timestamp})
-    |> Tx.Signature.set_public_key(second_pub_key)
+    |> Tx.SecondSignature.set_public_key(second_pub_key)
     |> Tx.sign(wallet)
     |> Tx.normalize()
   end

@@ -28,7 +28,7 @@ defmodule Tx.MultiSigTest do
     }
   }
 
-  def build_and_sign_tx() do
+  def build_and_sign_tx do
     wallet = Dpos.Wallet.generate(@secret)
 
     Tx.MultiSig
