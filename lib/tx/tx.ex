@@ -5,7 +5,7 @@ defmodule Dpos.Tx do
   @callback type_id() :: integer()
   @callback get_child_bytes(%__MODULE__{}) :: binary()
 
-  @keys [
+  defstruct [
     :id,
     :recipient,
     :public_key,
@@ -18,8 +18,6 @@ defmodule Dpos.Tx do
     amount: 0,
     fee: 0
   ]
-
-  defstruct @keys
 
   @doc """
   Builds a new transaction.

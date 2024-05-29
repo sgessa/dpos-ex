@@ -1,7 +1,8 @@
 defmodule Dpos.Tx.Normalized do
   alias Dpos.{Tx, Utils}
 
-  @keys [
+  @derive Jason.Encoder
+  defstruct [
     :id,
     :recipientId,
     :senderPublicKey,
@@ -13,9 +14,6 @@ defmodule Dpos.Tx.Normalized do
     asset: %{},
     fee: 0
   ]
-
-  @derive Jason.Encoder
-  defstruct @keys
 
   @doc """
   Normalizes the transaction in a format that it could be broadcasted through a relay node.
