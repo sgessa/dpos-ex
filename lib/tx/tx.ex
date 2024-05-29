@@ -9,7 +9,7 @@ defmodule Dpos.Tx do
   @callback type_id() :: integer()
   @callback get_child_bytes(%__MODULE__{}) :: binary()
 
-  @type t() :: %Tx{}
+  @type t() :: %__MODULE__{}
 
   defstruct [
     :id,

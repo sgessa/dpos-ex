@@ -6,7 +6,7 @@ defmodule Dpos.Wallet do
 
   defstruct [:priv_key, :pub_key, :address, :suffix_length]
 
-  @type t() :: %Dpos.Wallet{}
+  @type t() :: %__MODULE__{}
 
   @doc """
   Alias for `generate(_secret, "L")`.
