@@ -22,14 +22,14 @@ end
 iex> secret = "my secret"
 
 # For Lisk
-iex> lisk_wallet = Dpos.Wallet.generate_lisk(secret)
+iex> lisk_wallet = Wallet.generate_lisk(secret)
 
 # For Shift
-iex> shift_wallet = Dpos.Wallet.generate_shift(secret)
+iex> shift_wallet = Wallet.generate_shift(secret)
 
 # For any lisk-like wallet
-iex> wallet = Dpos.Wallet.generate(secret, "XYZ")
-%Dpos.Wallet{
+iex> wallet = Wallet.generate(secret, "XYZ")
+%Wallet{
   address: "2340651171948227443XYZ",
   priv_key: <<185, 209, 208, 19, 246, 0, 236, 27, 241, 107, 174, 106, 54, 52,
     202, 209, 93, 204, 73, 12, 159, 40, 53, 118, 66, 1, 164, 26, 29, 112, 222,
@@ -40,25 +40,25 @@ iex> wallet = Dpos.Wallet.generate(secret, "XYZ")
 }
 
 # Sign a message
-iex> {:ok, signature} = Dpos.Wallet.sign_message(wallet, "My Signed Message")
+iex> {:ok, signature} = Wallet.sign_message(wallet, "My Signed Message")
 
 # Verify a message
-iex> :ok = Dpos.Wallet.verify_message(wallet, "My Signed Message", signature)
+iex> :ok = Wallet.verify_message(wallet, "My Signed Message", signature)
 ```
 
 **Transaction utilities**
 
 ```elixir
 iex> tx = \
-iex>  %{amount: 10_000_000_000, fee: 10_000_000, recipient: "2340651171948227443XYZ"} \
-iex>  |> Dpos.Tx.Send.build() \
-iex>  |> Dpos.Tx.Send.sign(wallet)
+iex>  Tx.Send
+iex>  |> Tx.build(%{amount: 10_000_000_000, fee: 10_000_000, recipient: "2340651171948227443XYZ"}) \
+iex>  |> Tx.sign(wallet)
 
 # Optional: signing the tx using a second private key
-iex> Dpos.Tx.Send.sign(tx, wallet, second_priv_key)
+iex> Tx.sign(tx, wallet, second_priv_key)
 
 # It is possible to pass a secret/suffix tuple as second argument to Tx.sign/3:
-iex> Dpos.Tx.Send.sign(tx, {"my secret", "L"})
+iex> Tx.sign(tx, {"my secret", "L"})
 
 # Finally we can broadcast our transaction to a remote node (or a local node)
 iex> network = [
@@ -68,12 +68,12 @@ iex>   uri: "http://127.0.0.1:8000"
 iex> ]
 
 iex> tx
-iex> |> Dpos.Tx.normalize()
-iex> |> Dpos.Net.broadcast(network)
+iex> |> Tx.normalize()
+iex> |> Net.broadcast(network)
 
 # The transaction can be normalized to be easier to read and to be broadcasted to a remote node
-iex> Dpos.Tx.normalize(tx)
-%Dpos.Tx{
+iex> Tx.normalize(tx)
+%Tx{
   id: "14577272354830356516",
   recipientId: "2340651171948227443XYZ",
   senderPublicKey: "f965aeb00689760467f15c3ca144be64c49a237ab1ea71746d2351add78a0b65",
