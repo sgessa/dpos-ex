@@ -49,8 +49,8 @@ iex> :ok = Wallet.verify_message(wallet, "My Signed Message", signature)
 **Transaction utilities**
 
 ```elixir
-iex> tx = \
-iex>  Tx.Send
+iex> tx =
+iex>  Tx.Send \
 iex>  |> Tx.build(%{amount: 10_000_000_000, fee: 10_000_000, recipient: "2340651171948227443XYZ"}) \
 iex>  |> Tx.sign(wallet)
 
@@ -67,8 +67,8 @@ iex>   version: "1.5.0",
 iex>   uri: "http://127.0.0.1:8000"
 iex> ]
 
-iex> tx
-iex> |> Tx.normalize()
+iex> tx \
+iex> |> Tx.normalize() \
 iex> |> Net.broadcast(network)
 
 # The transaction can be normalized to be easier to read and to be broadcasted to a remote node

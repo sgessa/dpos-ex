@@ -41,7 +41,7 @@ defmodule Dpos.MixProject do
     [
       main: "readme",
       source_ref: "v#{@version}",
-      extras: ["README.md"]
+      extras: ["README.md", "LICENSE.txt"]
     ]
   end
 
