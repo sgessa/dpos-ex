@@ -26,7 +26,7 @@ defmodule Tx.VoteTest do
     wallet = Wallet.generate(@secret)
 
     tx =
-      Tx.Vote.build(%{
+      Tx.build(Tx.Vote, %{
         fee: @tx.fee,
         timestamp: @tx.timestamp,
         recipient: @tx.recipientId
@@ -34,7 +34,7 @@ defmodule Tx.VoteTest do
 
     tx
     |> Tx.Vote.vote("01389197bbaf1afb0acd47bbfeabb34aca80fb372a8f694a1c0716b3398db746")
-    |> Tx.Vote.sign(wallet)
+    |> Tx.sign(wallet)
     |> Tx.normalize()
   end
 

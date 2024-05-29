@@ -31,8 +31,8 @@ defmodule Tx.MultiSigTest do
   def build_and_sign_tx() do
     wallet = Dpos.Wallet.generate(@secret)
 
-    %{fee: @tx.fee, timestamp: @tx.timestamp}
-    |> Tx.MultiSig.build()
+    Tx.MultiSig
+    |> Tx.build(%{fee: @tx.fee, timestamp: @tx.timestamp})
     |> Tx.MultiSig.set_lifetime(3600)
     |> Tx.MultiSig.set_min(2)
     |> Tx.MultiSig.add_public_key(
@@ -44,7 +44,7 @@ defmodule Tx.MultiSigTest do
     |> Tx.MultiSig.add_public_key(
       "b65aa5950acf1ade522bcf520f2b2491dcde2f312b4933f56443faff80ad8ebc"
     )
-    |> Tx.MultiSig.sign(wallet)
+    |> Tx.sign(wallet)
     |> Tx.normalize()
   end
 

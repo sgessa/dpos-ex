@@ -21,7 +21,7 @@ defmodule Tx.SendTest do
     wallet = Wallet.generate(@secret)
 
     tx =
-      Tx.Send.build(%{
+      Tx.build(Tx.Send, %{
         amount: @tx.amount,
         fee: @tx.fee,
         timestamp: @tx.timestamp,
@@ -30,7 +30,7 @@ defmodule Tx.SendTest do
       })
 
     tx
-    |> Tx.Send.sign(wallet)
+    |> Tx.sign(wallet)
     |> Tx.normalize()
   end
 

@@ -24,16 +24,16 @@ defmodule Tx.SendSecondSigTest do
     wallet = Dpos.Wallet.generate(@secret)
     {:ok, second_priv_key, _} = Dpos.Utils.seed_keypair(@second_secret)
 
-    tx =
-      Tx.Send.build(%{
-        amount: @tx.amount,
-        timestamp: @tx.timestamp,
-        fee: @tx.fee,
-        recipient: @tx.recipientId
-      })
+    attrs = %{
+      amount: @tx.amount,
+      timestamp: @tx.timestamp,
+      fee: @tx.fee,
+      recipient: @tx.recipientId
+    }
 
-    tx
-    |> Tx.Send.sign(wallet, second_priv_key)
+    Tx.Send
+    |> Tx.build(attrs)
+    |> Tx.sign(wallet, second_priv_key)
     |> Tx.normalize()
   end
 

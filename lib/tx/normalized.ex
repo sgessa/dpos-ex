@@ -22,14 +22,15 @@ defmodule Dpos.Tx.Normalized do
   """
   @spec normalize(%Tx{}) :: %Tx.Normalized{}
   def normalize(%Tx{} = tx) do
-    attrs = Map.take(tx, [:id, :type, :timestamp, :amount, :fee, :asset])
+    attrs = Map.take(tx, [:id, :timestamp, :amount, :fee, :asset])
 
     %__MODULE__{}
     |> Map.merge(attrs)
+    |> Map.put(:type, tx.type.type_id())
     |> Map.put(:recipientId, tx.recipient)
     |> Map.put(:senderPublicKey, Utils.hexdigest(tx.public_key))
     |> Map.put(:signature, Utils.hexdigest(tx.signature))
-    |> Map.put(:signSignature, Utils.hexdigest(tx.sign_signature))
+    |> Map.put(:signSignature, Utils.hexdigest(tx.second_signature))
     |> normalize_asset()
   end
 

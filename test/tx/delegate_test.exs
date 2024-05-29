@@ -21,10 +21,10 @@ defmodule Tx.DelegateTest do
   def build_and_sign_tx() do
     wallet = Dpos.Wallet.generate(@delegate_secret)
 
-    %{fee: @tx.fee, timestamp: @tx.timestamp}
-    |> Tx.Delegate.build()
+    Tx.Delegate
+    |> Tx.build(%{fee: @tx.fee, timestamp: @tx.timestamp})
     |> Tx.Delegate.set_delegate("genesis_1")
-    |> Tx.Delegate.sign(wallet)
+    |> Tx.sign(wallet)
     |> Tx.normalize()
   end
 
