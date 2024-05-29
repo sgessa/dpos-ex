@@ -18,7 +18,7 @@ defmodule Tx.DelegateTest do
     fee: 2_500_000_000
   }
 
-  def build_and_sign_tx() do
+  def build_and_sign_tx do
     wallet = Dpos.Wallet.generate(@delegate_secret)
 
     Tx.Delegate

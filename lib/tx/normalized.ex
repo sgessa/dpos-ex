@@ -1,5 +1,11 @@
 defmodule Dpos.Tx.Normalized do
+  @moduledoc """
+  Normalized transaction data structure to be broadcasted via a relay node.
+  """
+
   alias Dpos.{Tx, Utils}
+
+  @type t :: %__MODULE__{}
 
   @derive Jason.Encoder
   defstruct [
@@ -18,7 +24,7 @@ defmodule Dpos.Tx.Normalized do
   @doc """
   Normalizes the transaction in a format that it could be broadcasted through a relay node.
   """
-  @spec normalize(%Tx{}) :: %Tx.Normalized{}
+  @spec normalize(Tx.t()) :: t()
   def normalize(%Tx{} = tx) do
     attrs = Map.take(tx, [:id, :timestamp, :amount, :fee, :asset])
 

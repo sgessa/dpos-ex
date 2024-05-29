@@ -32,6 +32,7 @@ defmodule Dpos.MixProject do
   defp deps do
     [
       {:ex_doc, "~> 0.16", only: :dev, runtime: false},
+      {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
       {:httpoison, "~> 1.0"},
       {:jason, "~> 1.0"}
     ]

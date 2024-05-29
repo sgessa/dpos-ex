@@ -22,17 +22,17 @@ defmodule Tx.VoteTest do
     }
   }
 
-  def build_and_sign_tx() do
+  def build_and_sign_tx do
     wallet = Wallet.generate(@secret)
 
-    tx =
-      Tx.build(Tx.Vote, %{
-        fee: @tx.fee,
-        timestamp: @tx.timestamp,
-        recipient: @tx.recipientId
-      })
+    attrs = %{
+      fee: @tx.fee,
+      timestamp: @tx.timestamp,
+      recipient: @tx.recipientId
+    }
 
-    tx
+    Tx.Vote
+    |> Tx.build(attrs)
     |> Tx.Vote.vote("01389197bbaf1afb0acd47bbfeabb34aca80fb372a8f694a1c0716b3398db746")
     |> Tx.sign(wallet)
     |> Tx.normalize()

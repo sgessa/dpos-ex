@@ -1,9 +1,15 @@
 defmodule Dpos.Tx do
+  @moduledoc """
+  Define behaviour and implement functions to work with transactions.
+  """
+
   alias Dpos.Crypto.Ed25519
   alias Dpos.{Tx, Utils, Wallet}
 
   @callback type_id() :: integer()
   @callback get_child_bytes(%__MODULE__{}) :: binary()
+
+  @type t() :: %Tx{}
 
   defstruct [
     :id,
@@ -22,7 +28,7 @@ defmodule Dpos.Tx do
   @doc """
   Builds a new transaction.
   """
-  @spec build(module(), map()) :: %Tx{}
+  @spec build(module(), map()) :: t()
   def build(mod, attrs) do
     attrs =
       attrs
@@ -42,7 +48,7 @@ defmodule Dpos.Tx do
   A secondary private_key can also be provided as third argument.
   """
   @type wallet_or_secret() :: %Wallet{} | {String.t(), String.t()}
-  @spec sign(%Tx{}, wallet_or_secret(), binary() | nil) :: %Tx{}
+  @spec sign(t(), wallet_or_secret(), binary() | nil) :: t()
   def sign(tx, wallet_or_secret, second_priv_key \\ nil)
 
   def sign(%Tx{} = tx, %Wallet{} = wallet, second_priv_key) do

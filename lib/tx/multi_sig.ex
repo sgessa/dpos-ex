@@ -1,4 +1,19 @@
 defmodule Dpos.Tx.MultiSig do
+  @moduledoc """
+  A Multi Sig transaction.
+
+  Example:
+
+  Tx.MultiSig
+  |> Tx.build(%{fee: 2000000000, timestamp: 73056420})
+  |> Tx.MultiSig.set_lifetime(3600)
+  |> Tx.MultiSig.set_min(2)
+  |> Tx.MultiSig.add_public_key("6267e1754d4b29cae9007fc0b3f0d435f981c90f70281ce053cb1c2243b848a2")
+  |> Tx.MultiSig.add_public_key("0bc54404ef644519592568687d2bc62593b912a57df319062bb7611b11009ebf")
+  |> Tx.MultiSig.add_public_key("b65aa5950acf1ade522bcf520f2b2491dcde2f312b4933f56443faff80ad8ebc")
+  |> Tx.sign(wallet)
+  """
+
   alias Dpos.Tx
 
   @behaviour Tx
@@ -29,7 +44,7 @@ defmodule Dpos.Tx.MultiSig do
 
   The lifetime must be >= 3600 and <= 259200.
   """
-  @spec set_lifetime(%Tx{}, pos_integer) :: %Tx{}
+  @spec set_lifetime(Tx.t(), pos_integer) :: Tx.t()
   def set_lifetime(%Tx{} = tx, ttl)
       when is_integer(ttl) and ttl >= 3600 and ttl <= 259_200 do
     ms =
@@ -45,7 +60,7 @@ defmodule Dpos.Tx.MultiSig do
 
   The minimum possible value is 2.
   """
-  @spec set_min(%Tx{}, pos_integer()) :: %Tx{}
+  @spec set_min(Tx.t(), pos_integer()) :: Tx.t()
   def set_min(%Tx{} = tx, min) when is_integer(min) and min >= 2 do
     ms =
       tx
@@ -58,7 +73,7 @@ defmodule Dpos.Tx.MultiSig do
   @doc """
   Adds a public key to the keysgroup field of the multisignature.
   """
-  @spec add_public_key(%Tx{}, String.t()) :: %Tx{}
+  @spec add_public_key(Tx.t(), String.t()) :: Tx.t()
   def add_public_key(%Tx{} = tx, pub_key)
       when is_binary(pub_key) and byte_size(pub_key) == 64 do
     ms =

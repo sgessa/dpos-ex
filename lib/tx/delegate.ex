@@ -1,4 +1,15 @@
 defmodule Dpos.Tx.Delegate do
+  @moduledoc """
+  A transaction to register a delegate.
+
+  Example:
+
+  Tx.Delegate
+  |> Tx.build(%{fee: 2500000000})
+  |> Tx.Delegate.set_delegate("genesis_1")
+  |> Tx.sign(wallet)
+  """
+
   alias Dpos.Tx
 
   @behaviour Tx
@@ -16,7 +27,7 @@ defmodule Dpos.Tx.Delegate do
   @doc """
   Sets the delegate username to be registered.
   """
-  @spec set_delegate(%Tx{}, String.t()) :: %Tx{}
+  @spec set_delegate(Tx.t(), String.t()) :: Tx.t()
   def set_delegate(%Tx{} = tx, username) when is_binary(username) do
     username = username |> String.downcase() |> String.trim()
     Map.put(tx, :asset, %{delegate: %{username: username}})

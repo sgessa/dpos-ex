@@ -17,7 +17,7 @@ defmodule Tx.SendTest do
     fee: 10_000_000
   }
 
-  def build_and_sign_tx() do
+  def build_and_sign_tx do
     wallet = Wallet.generate(@secret)
 
     tx =

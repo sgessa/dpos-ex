@@ -27,10 +27,4 @@ defmodule Dpos.Crypto.Ed25519 do
     {pk, sk} = :crypto.generate_key(:eddsa, :ed25519, private_key)
     {:ok, pk, sk}
   end
-
-  @spec generate_keypair() :: {:ok, binary(), binary()}
-  def generate_keypair do
-    {pk, sk} = :crypto.generate_key(:eddsa, :ed25519)
-    {:ok, pk, sk}
-  end
 end
