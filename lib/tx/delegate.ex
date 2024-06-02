@@ -4,10 +4,12 @@ defmodule Dpos.Tx.Delegate do
 
   Example:
 
+  ```
   Tx.Delegate
   |> Tx.build(%{fee: 2500000000})
   |> Tx.Delegate.set_delegate("genesis_1")
   |> Tx.sign(wallet)
+  ```
   """
 
   alias Dpos.Tx

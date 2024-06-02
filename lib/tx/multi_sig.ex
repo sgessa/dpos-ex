@@ -4,6 +4,7 @@ defmodule Dpos.Tx.MultiSig do
 
   Example:
 
+  ```
   Tx.MultiSig
   |> Tx.build(%{fee: 2000000000, timestamp: 73056420})
   |> Tx.MultiSig.set_lifetime(3600)
@@ -12,6 +13,7 @@ defmodule Dpos.Tx.MultiSig do
   |> Tx.MultiSig.add_public_key("0bc54404ef644519592568687d2bc62593b912a57df319062bb7611b11009ebf")
   |> Tx.MultiSig.add_public_key("b65aa5950acf1ade522bcf520f2b2491dcde2f312b4933f56443faff80ad8ebc")
   |> Tx.sign(wallet)
+  ```
   """
 
   alias Dpos.Tx

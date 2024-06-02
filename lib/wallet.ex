@@ -9,13 +9,13 @@ defmodule Dpos.Wallet do
   @type t() :: %__MODULE__{}
 
   @doc """
-  Alias for `generate(_secret, "L")`.
+  Alias for `generate(secret, "L")`.
   """
   @spec generate_lisk(String.t()) :: t()
   def generate_lisk(secret), do: generate(secret, "L")
 
   @doc """
-  Alias for `generate(_secret, "S")`.
+  Alias for `generate(secret, "S")`.
   """
   @spec generate_shift(String.t()) :: t()
   def generate_shift(secret), do: generate(secret, "S")

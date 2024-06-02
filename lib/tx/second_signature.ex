@@ -4,6 +4,7 @@ defmodule Dpos.Tx.SecondSignature do
 
   Example:
 
+  ```
   wallet = Wallet.generate("first secret")
   %{pub_key: second_pub_key} = Wallet.generate("second secret")
 
@@ -11,6 +12,7 @@ defmodule Dpos.Tx.SecondSignature do
   |> Tx.build(%{fee: 2500000000})
   |> Tx.SecondSignature.set_public_key(second_pub_key)
   |> Tx.sign(wallet)
+  ```
   """
 
   alias Dpos.Tx
