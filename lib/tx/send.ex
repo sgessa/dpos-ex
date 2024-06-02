@@ -4,9 +4,11 @@ defmodule Dpos.Tx.Send do
 
   Example:
 
+  ```
   Tx.Send
   |> Tx.build(%{amount: 8840, fee: 100})
   |> Tx.sign(wallet)
+  ```
   """
 
   alias Dpos.Tx

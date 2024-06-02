@@ -66,17 +66,17 @@ defmodule Dpos.Tx do
     sign(tx, wallet, second_priv_key)
   end
 
-  defp attach_second_signature(%Tx{} = tx, nil), do: tx
-
-  defp attach_second_signature(%Tx{} = tx, second_priv_key) do
-    Map.put(tx, :second_signature, calculate_signature(tx, second_priv_key))
-  end
-
-  defp attach_signature(%Tx{} = tx, priv_key) do
+  defp attach_signature(tx, priv_key) do
     Map.put(tx, :signature, calculate_signature(tx, priv_key))
   end
 
-  defp calculate_signature(%Tx{} = tx, priv_key) do
+  defp attach_second_signature(tx, nil), do: tx
+
+  defp attach_second_signature(tx, second_priv_key) do
+    Map.put(tx, :second_signature, calculate_signature(tx, second_priv_key))
+  end
+
+  defp calculate_signature(tx, priv_key) do
     {:ok, signature} =
       tx
       |> compute_hash()
@@ -85,13 +85,13 @@ defmodule Dpos.Tx do
     signature
   end
 
-  defp calculate_id(%Tx{} = tx) do
+  defp calculate_id(tx) do
     <<head::bytes-size(8), _rest::bytes>> = compute_hash(tx)
     id = head |> Utils.reverse_binary() |> to_string()
     Map.put(tx, :id, id)
   end
 
-  defp compute_hash(%Tx{} = tx) do
+  defp compute_hash(tx) do
     bytes =
       :erlang.list_to_binary([
         <<tx.type.type_id()>>,
@@ -124,6 +124,7 @@ defmodule Dpos.Tx do
     end
   end
 
+  @spec normalize(Dpos.Tx.t()) :: Dpos.Tx.Normalized.t()
   def normalize(%Tx{} = tx) do
     Tx.Normalized.normalize(tx)
   end
